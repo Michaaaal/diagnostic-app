@@ -1,21 +1,17 @@
 package michal.malek.diagnosticsapp.auth.services;
 
-import com.google.api.client.util.DateTime;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import michal.malek.diagnosticsapp.auth.exceptions.UserNotFound;
 import michal.malek.diagnosticsapp.auth.exceptions.UserWithEmailAlreadyExist;
 import michal.malek.diagnosticsapp.auth.models.*;
 import michal.malek.diagnosticsapp.auth.repositories.RetrievePasswordOperationRepository;
 import michal.malek.diagnosticsapp.auth.repositories.UserRepository;
-import michal.malek.diagnosticsapp.mappers.UserMapper;
-import michal.malek.diagnosticsapp.models.UserEntity;
+import michal.malek.diagnosticsapp.core.mappers.UserMapper;
+import michal.malek.diagnosticsapp.core.models.UserEntity;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -27,11 +23,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.text.DateFormat;
 import java.time.Duration;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -102,7 +96,7 @@ public class AuthService {
     public String loginTemplate(Model model) {
         String googleUrl = googleOauth2Service.getGoogleOAuth2redirectUrl();
         model.addAttribute("googleUrl", googleUrl);
-        return "login";
+        return "auth/login";
     }
 
     public String login ( String email, String password, HttpServletResponse response, RedirectAttributes redirectAttributes ){
@@ -190,10 +184,6 @@ public class AuthService {
         }
         redirectAttributes.addFlashAttribute("message", new AuthResponse("Activation went wrong please contact support", ResponseType.ERROR));
         return "redirect:/login";
-    }
-
-    public void logout(HttpServletResponse response, HttpServletRequest request) {
-        cookieService.deleteTokenCookies(request,response);
     }
 
     @Transactional
@@ -292,7 +282,7 @@ public class AuthService {
 
     public String resetPasswordTemplate(String operationUid, Model model) {
         model.addAttribute("resetPasswordDTO", new ResetPasswordDTO(operationUid));
-        return "/reset-password";
+        return "auth/reset-password";
     }
 
     @Transactional

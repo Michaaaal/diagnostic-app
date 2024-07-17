@@ -11,7 +11,7 @@ import michal.malek.diagnosticsapp.auth.repositories.UserRepository;
 import michal.malek.diagnosticsapp.auth.services.AuthService;
 import michal.malek.diagnosticsapp.auth.services.CookieService;
 import michal.malek.diagnosticsapp.auth.services.JWTService;
-import michal.malek.diagnosticsapp.models.UserEntity;
+import michal.malek.diagnosticsapp.core.models.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

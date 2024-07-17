@@ -1,6 +1,6 @@
 package michal.malek.diagnosticsapp.auth.repositories;
 
-import michal.malek.diagnosticsapp.models.UserEntity;
+import michal.malek.diagnosticsapp.core.models.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

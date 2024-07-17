@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 import lombok.Setter;
 import michal.malek.diagnosticsapp.auth.configuration.EmailConfiguration;
-import michal.malek.diagnosticsapp.models.UserEntity;
+import michal.malek.diagnosticsapp.core.models.UserEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -24,10 +24,10 @@ public class EmailService {
     @Value("${front.url}")
     private String frontUrl;
 
-    @Value("classpath:/templates/email/activate.html")
+    @Value("classpath:/templates/auth/email/activate.html")
     Resource activeTemplate;
 
-    @Value("classpath:/templates/email/retrieve-password-email.html")
+    @Value("classpath:/templates/auth/email/retrieve-password-email.html")
     Resource retrieveTemplate;
 
     public void sendActivation(UserEntity user) throws IOException {

@@ -29,7 +29,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     private final JWTService jwtService;
     private final CookieService cookieService;
-    private final List<String> openResources = List.of("/auth-callback","/reset-password-post","/reset-password","/retrieve-password-start","/logout","/account-activate","/login","/login-post","/register","/register-post", "/static/", "/favicon.ico","/retrieve-password");
+    private final List<String> openResources = List.of("/logout","/auth-callback","/reset-password-post","/reset-password","/retrieve-password-start","/logout","/account-activate","/login","/login-post","/register","/register-post", "/static/", "/favicon.ico","/retrieve-password");
     @Value("${jwt.exp}")
     private int jwtExp;
     @Value("${jwt.refresh.exp}")
@@ -93,7 +93,12 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                     } else if (type.equals("ULTIMATE")) {
                         grantedAuthorities.add(UserType.PREMIUM);
                         grantedAuthorities.add(UserType.ULTIMATE);
+                    } else if (type.equals("ADMIN")) {
+                        grantedAuthorities.add(UserType.PREMIUM);
+                        grantedAuthorities.add(UserType.ULTIMATE);
+                        grantedAuthorities.add(UserType.ADMIN);
                     }
+
 
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                             subject, null, grantedAuthorities);
@@ -108,13 +113,11 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
                 } catch (ExpiredJwtException e) {
                     System.out.println("Token expired, redirecting to login page");
-                    cookieService.deleteTokenCookies(request, response);
-                    response.sendRedirect(request.getContextPath() + "/login");
+                    response.sendRedirect(request.getContextPath() + "/logout");
                     return;
                 } catch (Exception e) {
                     System.out.println("Something went wrong: " + e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()));
-                    cookieService.deleteTokenCookies(request, response);
-                    response.sendRedirect(request.getContextPath() + "/login");
+                    response.sendRedirect(request.getContextPath() + "/logout");
                     return;
                 }
             }

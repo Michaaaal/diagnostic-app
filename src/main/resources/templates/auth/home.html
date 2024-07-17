@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+HOME
+<p th:if="${message}" th:text="${message.message}" th:style="'color: ' + ${message.type.color}"></p>
+<p th:if="${userEmail}" th:text="${userEmail}"></p>
+
+<p th:style="'color:blue '" onclick="window.location.href='/add-drugs'"> add-drugs </p>
+<p th:style="'color:blue '" onclick="window.location.href='/account/admin/dashboard'"> admin-dashboard </p>
+<form th:action="@{/logout}" method="get">
+    <button type="submit">Logout</button>
+</form>
+
+</body>
+</html>

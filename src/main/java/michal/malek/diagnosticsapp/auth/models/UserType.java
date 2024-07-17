@@ -3,7 +3,7 @@ package michal.malek.diagnosticsapp.auth.models;
 import org.springframework.security.core.GrantedAuthority;
 
 public enum UserType implements GrantedAuthority {
-    STANDARD,PREMIUM,ULTIMATE;
+    STANDARD,PREMIUM,ULTIMATE,ADMIN;
 
     @Override
     public String getAuthority() {

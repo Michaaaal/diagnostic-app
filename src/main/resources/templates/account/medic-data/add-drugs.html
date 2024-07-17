@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Drug Search</title>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Funkcja do pobierania i wyświetlania dodanych lekarstw
+            function loadOwnedDrugs() {
+                fetch("/find-owned-drugs", {
+                    method: 'GET',
+                    credentials: 'same-origin', // To send cookies with the request
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        var ownedDrugsDiv = document.getElementById("ownedDrugs");
+                        ownedDrugsDiv.innerHTML = ""; // Wyczyść poprzednie wyniki
+                        data.forEach(drug => {
+                            var drugElement = document.createElement("div");
+                            drugElement.textContent = drug.productName + " (" + drug.commonName + ")";
+
+                            // Tworzenie przycisku "-"
+                            var removeButton = document.createElement("button");
+                            removeButton.textContent = "-";
+                            removeButton.addEventListener("click", function() {
+                                fetch("/remove-drug?medicId=" + drug.medicId)
+                                    .then(response => {
+                                        if (response.ok) {
+                                            alert("Drug removed successfully!");
+                                            loadOwnedDrugs(); // Refresh owned drugs after removing one
+                                        } else {
+                                            alert("Error removing drug");
+                                        }
+                                    })
+                                    .catch(error => console.error('Error removing drug:', error));
+                            });
+
+                            drugElement.appendChild(removeButton);
+                            ownedDrugsDiv.appendChild(drugElement);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching owned drugs:', error));
+            }
+
+            loadOwnedDrugs(); // Load owned drugs when the page loads
+
+            var debounceTimeout;
+            var debounceDelay = 300; // Opóźnienie w milisekundach
+
+            document.getElementById("searchInput").addEventListener("input", function() {
+                clearTimeout(debounceTimeout);
+                var query = this.value;
+
+                debounceTimeout = setTimeout(function() {
+                    if (query.length > 0) { // Tylko wykonuj zapytania, jeśli jest coś wpisane
+                        fetch("/find-drugs?str=" + query)
+                            .then(response => response.json())
+                            .then(data => {
+                                var resultsDiv = document.getElementById("results");
+                                resultsDiv.innerHTML = ""; // Wyczyść poprzednie wyniki
+                                data.forEach(drug => {
+                                    var drugElement = document.createElement("div");
+                                    drugElement.textContent = drug.productName + " (" + drug.commonName + ")";
+
+                                    // Tworzenie przycisku "+"
+                                    var addButton = document.createElement("button");
+                                    addButton.textContent = "+";
+                                    addButton.addEventListener("click", function() {
+                                        fetch("/add-drug?medicId=" + drug.medicId)
+                                            .then(response => {
+                                                if (response.ok) {
+                                                    alert("Drug added successfully!");
+                                                    loadOwnedDrugs(); // Refresh owned drugs after adding a new one
+                                                } else {
+                                                    alert("Error adding drug");
+                                                }
+                                            })
+                                            .catch(error => console.error('Error adding drug:', error));
+                                    });
+
+                                    drugElement.appendChild(addButton);
+                                    resultsDiv.appendChild(drugElement);
+                                });
+                            })
+                            .catch(error => console.error('Error fetching data:', error));
+                    } else {
+                        document.getElementById("results").innerHTML = ""; // Wyczyść wyniki, jeśli pole jest puste
+                    }
+                }, debounceDelay);
+            });
+        });
+    </script>
+</head>
+<body>
+<p th:style="'color:blue '" onclick="window.location.href='/home'"> HOME </p>
+<p th:if="${message}" th:text="${message.message}" th:style="'color: ' + ${message.type.color}"></p>
+<h1>Drug Search</h1>
+<input type="text" id="searchInput" placeholder="Enter drug name">
+<div id="results"></div>
+<h2>Owned Drugs</h2>
+<div id="ownedDrugs"></div>
+</body>
+</html>

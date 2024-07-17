@@ -28,9 +28,15 @@ public class AuthConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth-callback","/reset-password-post","/reset-password","/logout","/login", "/login-post", "/register", "/register-post", "/static/", "/favicon.ico", "/retrieve-password-start","/retrieve-password", "/account-activate").permitAll()
+                        .requestMatchers("/logout","/auth-callback","/reset-password-post","/reset-password","/logout","/login", "/login-post", "/register", "/register-post", "/static/", "/favicon.ico", "/retrieve-password-start","/retrieve-password", "/account-activate").permitAll()
                         .requestMatchers("/premium").hasAuthority("PREMIUM")
+                        .requestMatchers("account/admin/dashboard","account/admin/update-drugs").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
+                )
+                .logout(logout -> logout
+                                .logoutUrl("/logout")
+                                .logoutSuccessUrl("/login?loggedout")
+                                .deleteCookies("JSESSIONID", "token", "refreshToken")
                 )
                 .exceptionHandling(exception -> exception
                         .accessDeniedPage("/home")
