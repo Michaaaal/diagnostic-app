@@ -1,6 +1,5 @@
 package michal.malek.diagnosticsapp.auth.controllers;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +22,7 @@ public class AuthController {
 
     private final AuthService authService;
     private final JWTService jwtService;
+
 
     @GetMapping("/login")
     public String login(Model model) {
@@ -48,9 +48,7 @@ public class AuthController {
 
     @GetMapping("/home")
     public String home(@CookieValue(name = "refreshToken", required = false) String refreshToken, Model model){
-        try {
         model.addAttribute("userEmail", jwtService.getSubject(refreshToken));
-        }catch (Exception ignored){}
         return "auth/home";
     }
 
@@ -84,7 +82,7 @@ public class AuthController {
         return authService.resetPassword(dto, bindingResult, redirectAttributes);
     }
 
-    @Scheduled(cron = "0 0 5 * * ?") //codziennie o 5
+    @Scheduled(cron = "0 0 5 * * ?")
     public void deleteNotActivatedAccounts(){
         authService.deleteNotActivatedAccounts();
     }

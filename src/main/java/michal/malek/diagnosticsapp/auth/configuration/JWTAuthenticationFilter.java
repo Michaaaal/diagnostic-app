@@ -35,7 +35,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Value("${jwt.refresh.exp}")
     private int jwtRefreshExp;
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         SecurityContextHolder.getContext().setAuthentication(null);
@@ -53,76 +52,77 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
 
-
             List<Cookie> cookieList = Arrays.asList(cookies);
-            Cookie jwtCookie = cookieList.stream()
-                    .filter(cookie -> "token".equals(cookie.getName()) || "refreshToken".equals(cookie.getName()))
-                    .findFirst()
-                    .orElse(null);
+            Cookie tokenCookie = null;
+            Cookie refreshTokenCookie = null;
 
-            if (jwtCookie != null) {
-                try {
-
-                    if(jwtCookie.getName().equals("token")) {
-                        try{
-                            jwtService.validateToken(jwtCookie.getValue());
-                        }catch (ExpiredJwtException e){
-                            jwtCookie = cookieList.stream()
-                                    .filter(cookie -> "refreshToken".equals(cookie.getName()))
-                                    .findFirst()
-                                    .orElse(null);
-
-                            if(jwtCookie != null) {
-                                jwtService.validateToken(jwtCookie.getValue());
-                            }else{
-                                throw new Exception();
-                            }
-                        }
-                    }
-                    else{
-                        jwtService.validateToken(jwtCookie.getValue());
-                    }
-
-                    String subject = jwtService.getSubject(jwtCookie.getValue());
-                    String type = jwtService.getClaimUserType(jwtCookie.getValue());
-
-                    List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-                    grantedAuthorities.add(UserType.STANDARD);
-                    if(type.equals("PREMIUM")) {
-                        grantedAuthorities.add(UserType.PREMIUM);
-                    } else if (type.equals("ULTIMATE")) {
-                        grantedAuthorities.add(UserType.PREMIUM);
-                        grantedAuthorities.add(UserType.ULTIMATE);
-                    } else if (type.equals("ADMIN")) {
-                        grantedAuthorities.add(UserType.PREMIUM);
-                        grantedAuthorities.add(UserType.ULTIMATE);
-                        grantedAuthorities.add(UserType.ADMIN);
-                    }
-
-
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                            subject, null, grantedAuthorities);
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-
-                    if(jwtCookie.getName().equals("refreshToken")) {
-                        String claimUserUid = jwtService.getClaimUserUid(jwtCookie.getValue());
-                        response.addCookie( cookieService.generateCookie("token", jwtService.generateToken(claimUserUid ,type, subject ,jwtExp), jwtExp));
-                        response.addCookie( cookieService.generateCookie("refreshToken", jwtService.generateToken(claimUserUid ,type, subject,jwtRefreshExp) , jwtRefreshExp));
-                    }
-
-                } catch (ExpiredJwtException e) {
-                    System.out.println("Token expired, redirecting to login page");
-                    response.sendRedirect(request.getContextPath() + "/logout");
-                    return;
-                } catch (Exception e) {
-                    System.out.println("Something went wrong: " + e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()));
-                    response.sendRedirect(request.getContextPath() + "/logout");
-                    return;
+            for( var cookie : cookieList) {
+                if(cookie.getName().equals("token")) {
+                    tokenCookie = cookie;
+                }
+                if(cookie.getName().equals("refreshToken")) {
+                    refreshTokenCookie = cookie;
                 }
             }
+
+            try{
+                if(tokenCookie != null && refreshTokenCookie != null) {
+                    try {
+                        jwtService.validateToken(tokenCookie.getValue());
+                    }catch (ExpiredJwtException e) {
+                        jwtService.validateToken(refreshTokenCookie.getValue());
+
+                        String subject = jwtService.getSubject(refreshTokenCookie.getValue());
+                        String type = jwtService.getClaimUserType(refreshTokenCookie.getValue());
+                        List<GrantedAuthority> grantedAuthorities = this.getType(type);
+                        this.setAuthentication(subject,grantedAuthorities,request);
+
+                        String claimUserUid = jwtService.getClaimUserUid(refreshTokenCookie.getValue());
+                        response.addCookie( cookieService.generateCookie("token", jwtService.generateToken(claimUserUid ,type, subject ,jwtExp), jwtExp));
+                        response.addCookie( cookieService.generateCookie("refreshToken", jwtService.generateToken(claimUserUid ,type, subject,jwtRefreshExp) , jwtRefreshExp));
+                        filterChain.doFilter(request, response);
+                    }
+
+                    jwtService.validateToken(refreshTokenCookie.getValue());
+
+                    String subject = jwtService.getSubject(refreshTokenCookie.getValue());
+                    String type = jwtService.getClaimUserType(refreshTokenCookie.getValue());
+                    List<GrantedAuthority> grantedAuthorities = this.getType(type);
+                    this.setAuthentication(subject,grantedAuthorities,request);
+                }
+            }catch (Exception e){
+                response.sendRedirect(request.getContextPath() + "/logout");
+                return;
+            }
+        }else {
+            response.sendRedirect(request.getContextPath() + "/logout");
+            return;
         }
         filterChain.doFilter(request, response);
     }
 
+    private List<GrantedAuthority> getType(String type) {
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        grantedAuthorities.add(UserType.STANDARD);
+        switch (type) {
+            case "PREMIUM" -> grantedAuthorities.add(UserType.PREMIUM);
+            case "ULTIMATE" -> {
+                grantedAuthorities.add(UserType.PREMIUM);
+                grantedAuthorities.add(UserType.ULTIMATE);
+            }
+            case "ADMIN" -> {
+                grantedAuthorities.add(UserType.PREMIUM);
+                grantedAuthorities.add(UserType.ULTIMATE);
+                grantedAuthorities.add(UserType.ADMIN);
+            }
+        }
+        return grantedAuthorities;
+    }
+
+    private void setAuthentication(String subject, List<GrantedAuthority> grantedAuthorities, HttpServletRequest request){
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                subject, null, grantedAuthorities);
+        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
 }

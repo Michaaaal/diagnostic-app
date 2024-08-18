@@ -59,8 +59,16 @@
 <div class="container">
     <h1>Admin Dashboard</h1>
         <form th:action="@{/account/admin/update-drugs}" method="get">
-        <button type="submit" class="btn">Update Drugs</button>
-    </form>
+            <button type="submit" class="btn">Update Drugs</button>
+        </form>
+
+        <form th:action="@{/account/admin/update-chronic-diseases}" method="get">
+            <button type="submit" class="btn">Update Chronic Diseases</button>
+        </form>
+
+        <form th:action="@{/account/admin/list}" method="get">
+            <button type="submit" class="btn">List files on drive</button>
+        </form>
 
 </div>
 </body>

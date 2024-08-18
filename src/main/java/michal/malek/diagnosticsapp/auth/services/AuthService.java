@@ -12,7 +12,9 @@ import michal.malek.diagnosticsapp.auth.repositories.UserRepository;
 import michal.malek.diagnosticsapp.core.mappers.UserMapper;
 import michal.malek.diagnosticsapp.core.models.UserEntity;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
@@ -23,6 +25,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.Date;
 import java.util.List;
@@ -47,50 +50,57 @@ public class AuthService {
     private int jwtRefreshExp;
 
     public String loginWithGoogle(String code, HttpServletResponse response, RedirectAttributes redirectAttributes){
-        OAuth2AccessToken accessToken = googleOauth2Service.codeToAccessToken(code);
-        OAuth2AuthenticationToken authentication = googleOauth2Service.accessTokenToAuthToken(accessToken);
-        OAuth2User user = authentication.getPrincipal();
+        try{
+            OAuth2AccessToken accessToken = googleOauth2Service.codeToAccessToken(code);
+            OAuth2AuthenticationToken authentication = googleOauth2Service.accessTokenToAuthToken(accessToken);
+            OAuth2User user = authentication.getPrincipal();
+            try {
+                if(authentication.isAuthenticated()){
+                    String email = user.getAttribute("email");
+                    UserEntity userByEmail = userRepository.findByEmail(email);
 
-        try {
-            if(authentication.isAuthenticated()){
-                String email = user.getAttribute("email");
-                UserEntity userByEmail = userRepository.findByEmail(email);
+                    if(userByEmail==null){
+                        UserEntity newUser = new UserEntity(email,null);
+                        newUser.setGoogle(true);
+                        newUser.setEnabled(true);
 
-                if(userByEmail==null){
-                    UserEntity newUser = new UserEntity(email,null);
-                    newUser.setGoogle(true);
-                    newUser.setEnabled(true);
+                        userRepository.save(newUser);
+                        userByEmail = newUser;
+                    }
 
-                    userRepository.save(newUser);
-                    userByEmail = newUser;
-                }
+                    if(!userByEmail.isGoogle()){
+                        redirectAttributes.addFlashAttribute("message", new AuthResponse("Account already created with this email", ResponseType.NOTIFICATION));
+                        return "redirect:/login";
+                    }
 
-                if(!userByEmail.isGoogle()){
-                    redirectAttributes.addFlashAttribute("message", new AuthResponse("Account already created with this email", ResponseType.NOTIFICATION));
+                    UserType userType = userByEmail.getUserType();
+                    String uid = userByEmail.getUid();
+
+                    String tokenValue = jwtService.generateToken(uid,userType.toString(),email, jwtExp);
+                    String refreshValue = jwtService.generateToken(uid,userType.toString(),email, jwtRefreshExp);
+                    Cookie token = cookieService.generateCookie("token", tokenValue, jwtExp);
+                    Cookie refresh = cookieService.generateCookie("refreshToken", refreshValue, jwtRefreshExp);
+                    response.addCookie(token);
+                    response.addCookie(refresh);
+
+                    redirectAttributes.addFlashAttribute("message", new AuthResponse("Welcome Back", ResponseType.SUCCESS));
+                    return "redirect:/home";
+
+                }else {
+                    redirectAttributes.addFlashAttribute("message",new AuthResponse("AUTHORIZATION WENT WRONG 1",ResponseType.FAILURE));
                     return "redirect:/login";
                 }
-
-                UserType userType = userByEmail.getUserType();
-                String uid = userByEmail.getUid();
-
-                String tokenValue = jwtService.generateToken(uid,userType.toString(),email, jwtExp);
-                String refreshValue = jwtService.generateToken(uid,userType.toString(),email, jwtRefreshExp);
-                Cookie token = cookieService.generateCookie("token", tokenValue, jwtExp);
-                Cookie refresh = cookieService.generateCookie("refreshToken", refreshValue, jwtRefreshExp);
-                response.addCookie(token);
-                response.addCookie(refresh);
-
-                redirectAttributes.addFlashAttribute("message", new AuthResponse("Welcome Back", ResponseType.SUCCESS));
-                return "redirect:/home";
-
-            }else {
-                redirectAttributes.addFlashAttribute(new AuthResponse("AUTHORIZATION WENT WRONG",ResponseType.FAILURE));
+            }catch( AuthenticationException authenticationException){
+                redirectAttributes.addFlashAttribute("message",new AuthResponse("AUTHORIZATION WENT WRONG 2",ResponseType.FAILURE));
                 return "redirect:/login";
             }
-        }catch( AuthenticationException authenticationException){
-            redirectAttributes.addFlashAttribute(new AuthResponse("AUTHORIZATION WENT WRONG 2",ResponseType.FAILURE));
+
+        }catch (Exception e){
+            redirectAttributes.addFlashAttribute("message",new AuthResponse("AUTHORIZATION WENT WRONG",ResponseType.FAILURE));
             return "redirect:/login";
         }
+
+
     }
 
     public String loginTemplate(Model model) {

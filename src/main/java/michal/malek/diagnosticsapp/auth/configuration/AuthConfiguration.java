@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Configuration
 @EnableWebSecurity
@@ -28,14 +29,14 @@ public class AuthConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/logout","/auth-callback","/reset-password-post","/reset-password","/logout","/login", "/login-post", "/register", "/register-post", "/static/", "/favicon.ico", "/retrieve-password-start","/retrieve-password", "/account-activate").permitAll()
+                        .requestMatchers("/logout","/auth-callback","/reset-password-post","/reset-password","/logout","/login", "/login-post", "/register", "/register-post", "/static/**", "/favicon.ico", "/retrieve-password-start","/retrieve-password", "/account-activate").permitAll()
                         .requestMatchers("/premium").hasAuthority("PREMIUM")
-                        .requestMatchers("account/admin/dashboard","account/admin/update-drugs").hasAuthority("ADMIN")
+                        .requestMatchers("account/admin/dashboard","account/admin/update-drugs","account/admin/delete-drive-file","/admin/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .logout(logout -> logout
                                 .logoutUrl("/logout")
-                                .logoutSuccessUrl("/login?loggedout")
+                                .logoutSuccessUrl("/login")
                                 .deleteCookies("JSESSIONID", "token", "refreshToken")
                 )
                 .exceptionHandling(exception -> exception

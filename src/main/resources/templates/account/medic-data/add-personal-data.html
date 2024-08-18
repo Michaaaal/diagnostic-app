@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Information Form</title>
+</head>
+<body>
+<p th:style="'color:blue '" onclick="window.location.href='/home'"> HOME </p>
+<p th:if="${message}" th:text="${message.message}" th:style="'color: ' + ${message.type.color}"></p>
+
+<h2>Personal Information Form</h2>
+
+<div th:if="${oldPersonalData != null}">
+    <h2>Your Personal Data</h2>
+    <p><strong>First Name:</strong> <span th:text="${oldPersonalData.firstName}">First Name</span></p>
+    <p><strong>Last Name:</strong> <span th:text="${oldPersonalData.lastName}">Last Name</span></p>
+    <p><strong>Age:</strong> <span th:text="${oldPersonalData.age}">Age</span></p>
+    <p><strong>Height:</strong> <span th:text="${oldPersonalData.height}">Height</span></p>
+    <p><strong>Weight:</strong> <span th:text="${oldPersonalData.weight}">Weight</span></p>
+    <p><strong>Gender:</strong> <span th:text="${oldPersonalData.gender}">Gender</span></p>
+</div>
+
+<div th:if="${oldPersonalData == null}">
+    <h2>Please add your data</h2>
+</div>
+
+<form th:action="@{/submit-personal-info}" method="post" th:object="${personalDataDTO}">
+    <label for="firstName">First Name:</label>
+    <input type="text" id="firstName" th:field="*{firstName}" maxlength="30" required>
+    <br><br>
+
+    <label for="lastName">Last Name:</label>
+    <input type="text" id="lastName" th:field="*{lastName}" maxlength="30" required>
+    <br><br>
+
+    <label for="age">Age:</label>
+    <input type="number" id="age" th:field="*{age}" min="0" max="120" required>
+    <br><br>
+
+    <label for="height">Height (cm):</label>
+    <input type="number" id="height" th:field="*{height}" min="0" max="300" required>
+    <br><br>
+
+    <label for="weight">Weight (kg):</label>
+    <input type="number" id="weight" th:field="*{weight}" step="0.1" min="0" max="500" required>
+    <br><br>
+
+    <label for="gender">Gender:</label>
+    <select id="gender" th:field="*{gender}" required>
+        <option value="MALE">MALE</option>
+        <option value="FEMALE">FEMALE</option>
+        <option value="OTHER">OTHER</option>
+    </select>
+    <br><br>
+
+    <input type="submit" value="Submit">
+</form>
+
+</body>
+</html>

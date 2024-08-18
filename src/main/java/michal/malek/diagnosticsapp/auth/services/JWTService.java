@@ -53,22 +53,17 @@ public class JWTService {
     }
 
     public String getClaimUserUid(final String token){
-        try {
-            Jws<Claims> claimsJws = Jwts.parserBuilder()
+        Jws<Claims> claimsJws = Jwts.parserBuilder()
                     .setSigningKey(getSignKey())
                     .build()
                     .parseClaimsJws(token);
 
             Claims claims = claimsJws.getBody();
 
-            return claims.get("userUid").toString();
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to extract user UID from token", e);
-        }
+        return claims.get("userUid").toString();
     }
 
     public String getClaimUserType(final String token){
-        try {
             Jws<Claims> claimsJws = Jwts.parserBuilder()
                     .setSigningKey(getSignKey())
                     .build()
@@ -77,9 +72,6 @@ public class JWTService {
             Claims claims = claimsJws.getBody();
 
             return claims.get("type").toString();
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to extract user Type from token", e);
-        }
     }
 
 

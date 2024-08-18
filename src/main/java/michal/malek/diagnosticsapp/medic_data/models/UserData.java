@@ -5,7 +5,9 @@ import lombok.Data;
 import michal.malek.diagnosticsapp.core.models.UserEntity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -17,18 +19,18 @@ public class UserData {
     private String lastName;
     private int age;
     private double weight;
+    private int height;
     private String gender;
     @ManyToMany
-    private List<ChronicDisease> chronicDiseaseList;
+    private Set<ChronicDisease> chronicDiseaseSet;
     @ManyToMany
-    private List<Drug> drugList;
+    private Set<Drug> drugSet;
     @OneToMany
     private List<DiagnosticTest> diagnosticTestList;
     {
-        chronicDiseaseList = new ArrayList<>();
-        drugList = new ArrayList<>();
+        chronicDiseaseSet = new HashSet<>();
+        drugSet = new HashSet<>();
         diagnosticTestList = new ArrayList<>();
     }
-
 
 }
