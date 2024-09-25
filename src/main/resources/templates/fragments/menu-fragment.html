@@ -1,10 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
 <body>
-$END$
+<div th:fragment="menu">
+<nav>
+    <ul>
+        <li><a th:href="@{/home}">Home</a></li>
+        <li><a th:href="@{/medic-data}">Medic Data</a></li>
+        <li><a th:href="@{/diagnose}">New Diagnose</a></li>
+        <li><a th:href="@{/chose-diagnose}">Prev Diagnose</a></li>
+<!--        <li><a th:href="@{/upgrade-account}">Upgrade Acc</a></li>-->
+        <li><a th:href="@{/info}">Help</a></li>
+        <li><a th:href="@{/account/admin/dashboard}" class="admin">admin </a></li>
+        <li>
+            <form th:action="@{/logout}" method="get" >
+                <button type="submit" id="logout">Logout</button>
+            </form>
+        </li>
+    </ul>
+</nav>
+</div>
 </body>
 </html>

@@ -1,11 +1,11 @@
-package michal.malek.diagnosticsapp.auth.models;
+package michal.malek.diagnosticsapp.core.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class AuthResponse {
+public class AppResponse {
     private String message;
     private ResponseType type;
 }

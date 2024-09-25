@@ -1,16 +1,69 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Voice to Text</title>
+    <title>DiagnoseYourself</title>
+    <link rel="stylesheet" th:href="@{/css/footer-fragment.css}">
+    <link rel="stylesheet" th:href="@{/css/menu-fragment.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/diagnose.css}">
 </head>
 <body>
-<button id="toggle-record-btn">Start</button>
+
+<div th:insert="~{fragments/menu-fragment :: menu}"></div>
+
+<div class="container">
+
+<p th:if="${message}" th:text="${message.message}" th:style="'color: ' + ${message.type.color}"></p>
+<p th:if="${userDiagnoseDTO}" th:text="${userDiagnoseDTO.getEmail()} + '  Your token amount:  ' +${userDiagnoseDTO.getTokenAmount()}" ></p>
+
+<h1>Diagnostic Messages</h1>
+
+<!-- Display the messages -->
+<div th:if="${diagnose != null}">
+    <div th:if="${!#lists.isEmpty(diagnose.diagnoseMessageEntityList)}">
+        <div th:each="messageEntity : ${diagnose.diagnoseMessageEntityList}">
+            <div>
+                <p><strong>Role:</strong> <span th:text="${messageEntity.role}"></span></p>
+                <p><strong>Message:</strong> <span th:text="${messageEntity.message}"></span></p>
+                <p><strong>Date:</strong> <span th:text="${#dates.format(messageEntity.date, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+                <hr>
+            </div>
+        </div>
+    </div>
+    <p th:if="${#lists.isEmpty(diagnose.diagnoseMessageEntityList)}">No messages available.</p>
+</div>
+
+
+
+<h1>Wypełnij swój wywiad medyczny</h1>
+
+<div class="diagnose-container">
+<!-- Przycisk nagrywania oraz pole tekstowe do wyników -->
+<button id="toggle-record-btn" type="button" ><img src="/img/micro.png" style="width: 5vw; padding: 0" alt="Micro"> </button>
 <textarea id="result" rows="10" cols="50"></textarea>
 
+<!-- Formularz do przesłania danych -->
+<form th:action="@{/diagnose-yourself}" method="get" onsubmit="updateHiddenField(); disableSubmitButton()">
+    <input type="hidden" name="medicalInterview" id="hiddenMedicalInterview">
+    <input type="hidden" name="diagnoseEntityId" th:value="${diagnose?.id}">
+    <label for="chatType" >Select version:</label>
+    <select name="chatType" id="chatType" style="margin-bottom: 3vh; margin-top: 3vh">
+        <option value="GPT35_TURBO" selected>gpt-3.5-turbo (token cost: 25) </option>
+        <option value="GPT4_MINI">gpt-4o-mini (token cost: 100)</option>
+        <option value="GPT4_O">gpt-4o (token cost: 250)</option>
+    </select>
+    <br>
+    <button type="submit" id="submitButton" style="padding: 6%; width: 20vw; margin-left: 1vw"  >Send</button>
+</form>
+</div>
+</div>
+
+<div th:insert="~{fragments/footer-fragment :: footer-fragment}"></div>
 <script>
     const button = document.getElementById('toggle-record-btn');
     const result = document.getElementById('result');
+    const hiddenMedicalInterview = document.getElementById('hiddenMedicalInterview');
 
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.lang = 'pl-PL';
@@ -45,6 +98,18 @@
         button.textContent = 'Start';
         isRecording = false;
     };
+
+    function updateHiddenField() {
+        hiddenMedicalInterview.value = result.value;
+    }
+
+    function disableSubmitButton() {
+        var submitButton = document.getElementById('submitButton');
+        submitButton.disabled = true;
+        submitButton.value = 'Wysyłanie...';
+    }
 </script>
+
+
 </body>
 </html>

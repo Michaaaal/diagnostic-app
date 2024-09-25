@@ -29,7 +29,7 @@ public class AuthConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/logout","/auth-callback","/reset-password-post","/reset-password","/logout","/login", "/login-post", "/register", "/register-post", "/static/**", "/favicon.ico", "/retrieve-password-start","/retrieve-password", "/account-activate").permitAll()
+                        .requestMatchers("/css/**","/fonts/**", "/img/**", "/js/**" ,"/logout","/auth-callback","/reset-password-post","/reset-password","/logout","/login", "/login-post", "/register", "/register-post", "/static/**", "/favicon.ico", "/retrieve-password-start","/retrieve-password", "/account-activate").permitAll()
                         .requestMatchers("/premium").hasAuthority("PREMIUM")
                         .requestMatchers("account/admin/dashboard","account/admin/update-drugs","account/admin/delete-drive-file","/admin/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated()

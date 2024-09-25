@@ -17,16 +17,16 @@ public class UserData {
     private Long id;
     private String firstName;
     private String lastName;
-    private int age;
-    private double weight;
-    private int height;
-    private String gender;
+    protected int age;
+    protected double weight;
+    protected int height;
+    protected String gender;
     @ManyToMany
-    private Set<ChronicDisease> chronicDiseaseSet;
+    protected Set<ChronicDisease> chronicDiseaseSet;
     @ManyToMany
-    private Set<Drug> drugSet;
-    @OneToMany
-    private List<DiagnosticTest> diagnosticTestList;
+    protected Set<Drug> drugSet;
+    @OneToMany(cascade = CascadeType.ALL)
+    protected List<DiagnosticTest> diagnosticTestList;
     {
         chronicDiseaseSet = new HashSet<>();
         drugSet = new HashSet<>();

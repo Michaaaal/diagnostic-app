@@ -1,0 +1,88 @@
+@font-face {
+    font-family: 'Permanent Marker';
+    src: url("../fonts/PermanentMarker-Regular.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'Permanent Marker',serif;
+    font-size: 3vh;
+    background: url("../img/login-background.jpg");
+    background-size: cover; /* Pokrywa cały ekran */
+    background-position: center center; /* Wyśrodkowanie obrazu */
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.main-container{
+    min-width: 100%;
+    min-height: 100%;
+
+}
+
+.container {
+    margin-top: 2vh;
+    margin-bottom: 70px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 25%;
+}
+
+#text-logo{
+    width: 40vw;
+    margin-left: 30vw;
+    margin-top: 1vw;
+}
+
+h1 {
+    text-align: center;
+    color: white;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #e1dddd;
+    border-radius: 4px;
+}
+
+button {
+    width: 100%;
+    font-family: "Calibri Light", serif;
+}
+
+.forgot-password,
+.register-link {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.forgot-password p,
+.register-link p {
+    color: white;
+    text-decoration: none;
+}
+
+.forgot-password p:hover,
+.register-link p:hover {
+    text-decoration: underline;
+}
+

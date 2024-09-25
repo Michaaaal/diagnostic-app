@@ -2,8 +2,8 @@ package michal.malek.diagnosticsapp.medic_data.services;
 
 import com.google.api.services.drive.model.File;
 import lombok.RequiredArgsConstructor;
-import michal.malek.diagnosticsapp.auth.models.AuthResponse;
-import michal.malek.diagnosticsapp.auth.models.ResponseType;
+import michal.malek.diagnosticsapp.core.models.AppResponse;
+import michal.malek.diagnosticsapp.core.models.ResponseType;
 import michal.malek.diagnosticsapp.auth.services.JWTService;
 import michal.malek.diagnosticsapp.medic_data.models.*;
 import org.springframework.http.ResponseEntity;
@@ -31,10 +31,10 @@ public class AccountService {
         try{
             chronicDiseaseService.updateChronicDiseases();
         }catch (RuntimeException e){
-            redirectAttributes.addFlashAttribute("message", new AuthResponse("Something went wrong", ResponseType.ERROR));
+            redirectAttributes.addFlashAttribute("message", new AppResponse("Something went wrong", ResponseType.ERROR));
             return "redirect:/account/admin/dashboard";
         }
-        redirectAttributes.addFlashAttribute("message", new AuthResponse("diseases updated successfully", ResponseType.SUCCESS));
+        redirectAttributes.addFlashAttribute("message", new AppResponse("diseases updated successfully", ResponseType.SUCCESS));
         return "redirect:/account/admin/dashboard";
     }
 
@@ -42,10 +42,10 @@ public class AccountService {
         try{
             drugService.updateDrugs();
         }catch (IOException e){
-            redirectAttributes.addFlashAttribute("message", new AuthResponse("Something went wrong", ResponseType.ERROR));
+            redirectAttributes.addFlashAttribute("message", new AppResponse("Something went wrong", ResponseType.ERROR));
             return "redirect:/account/admin/dashboard";
         }
-        redirectAttributes.addFlashAttribute("message", new AuthResponse("Drugs updated successfully", ResponseType.SUCCESS));
+        redirectAttributes.addFlashAttribute("message", new AppResponse("Drugs updated successfully", ResponseType.SUCCESS));
         return "redirect:/account/admin/dashboard";
     }
 
@@ -118,21 +118,21 @@ public class AccountService {
         String userUid = jwtService.getClaimUserUid(refreshToken);
 
         if(!"application/pdf".equals(pdf.getContentType()) && !" application/x-pdf".equals(pdf.getContentType())){
-            redirectAttributes.addFlashAttribute("message", new AuthResponse("Wrong file format", ResponseType.FAILURE));
+            redirectAttributes.addFlashAttribute("message", new AppResponse("Wrong file format", ResponseType.FAILURE));
             return "redirect:/add-diagnostic-tests";
         }
 
-        long maxSize = 80 * 1024;
+        long maxSize = 200 * 1024;
         if (pdf.getSize() > maxSize) {
-            redirectAttributes.addFlashAttribute("message", new AuthResponse("Too big file", ResponseType.FAILURE));
+            redirectAttributes.addFlashAttribute("message", new AppResponse("Too big file", ResponseType.FAILURE));
             return "redirect:/add-diagnostic-tests";
         }
 
         if(userDataService.addDiagnosticTest(userUid ,pdf, DiagnosticsTestsType.valueOf(type))){
-            redirectAttributes.addFlashAttribute("message", new AuthResponse("Added diagnostic test", ResponseType.SUCCESS));
+            redirectAttributes.addFlashAttribute("message", new AppResponse("Added diagnostic test", ResponseType.SUCCESS));
             return "redirect:/add-diagnostic-tests";
         }
-        redirectAttributes.addFlashAttribute("message", new AuthResponse("Adding file failed", ResponseType.ERROR));
+        redirectAttributes.addFlashAttribute("message", new AppResponse("Adding file failed", ResponseType.ERROR));
         return "redirect:/add-diagnostic-tests";
     }
 
@@ -159,10 +159,10 @@ public class AccountService {
         try {
             googleDriveService.deleteFile(driveId);
         } catch (IOException e) {
-            redirectAttributes.addFlashAttribute("message", new AuthResponse("Deleting file failed", ResponseType.FAILURE));
+            redirectAttributes.addFlashAttribute("message", new AppResponse("Deleting file failed", ResponseType.FAILURE));
             return "redirect:/account/admin/dashboard";
         }
-        redirectAttributes.addFlashAttribute("message", new AuthResponse("Deleting file succeed", ResponseType.SUCCESS));
+        redirectAttributes.addFlashAttribute("message", new AppResponse("Deleting file succeed", ResponseType.SUCCESS));
         return "redirect:/account/admin/dashboard";
     }
 
@@ -170,10 +170,10 @@ public class AccountService {
         String userUid = jwtService.getClaimUserUid(refreshToken);
         try{
             userDataService.addPersonalData(personalDataDTO, userUid);
-            redirectAttributes.addFlashAttribute("message", new AuthResponse("Adding Personal data success", ResponseType.SUCCESS));
+            redirectAttributes.addFlashAttribute("message", new AppResponse("Adding Personal data success", ResponseType.SUCCESS));
             return "redirect:/add-personal-data";
         }catch (Exception e){
-            redirectAttributes.addFlashAttribute("message", new AuthResponse("Adding data failed", ResponseType.ERROR));
+            redirectAttributes.addFlashAttribute("message", new AppResponse("Adding data failed", ResponseType.ERROR));
             return "redirect:/add-personal-data";
         }
     }

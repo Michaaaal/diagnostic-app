@@ -21,6 +21,7 @@ public class UserEntity {
     private String password;
     private boolean enabled;
     private boolean isGoogle;
+    private int tokenAmount;
     @OneToOne(cascade = CascadeType.ALL)
     private UserData userData;
     @Enumerated(EnumType.STRING)
@@ -32,6 +33,7 @@ public class UserEntity {
         this.email = email;
         this.password = password;
         this.userType = UserType.STANDARD;
+        this.tokenAmount = UserType.STANDARD.getRefillTokenAmount();
         this.enabled = false;
         this.isGoogle = false;
         userData = new UserData();

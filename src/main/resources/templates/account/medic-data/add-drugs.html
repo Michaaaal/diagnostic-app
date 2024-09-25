@@ -2,6 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Drug Search</title>
+    <link rel="stylesheet" th:href="@{/css/footer-fragment.css}">
+    <link rel="stylesheet" th:href="@{/css/menu-fragment.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             // Funkcja do pobierania i wyświetlania dodanych lekarstw
@@ -16,7 +19,12 @@
                         ownedDrugsDiv.innerHTML = ""; // Wyczyść poprzednie wyniki
                         data.forEach(drug => {
                             var drugElement = document.createElement("div");
-                            drugElement.textContent = drug.productName + " (" + drug.commonName + ")";
+                            var link = document.createElement('a');
+                            link.href = drug.leafletUrl; // Ustawiamy href na leafletUrl
+                            link.textContent = "recepta"; // Ustawiamy tekst linku
+
+                            drugElement.textContent = drug.productName + " (" + drug.commonName + ")  ";
+                            drugElement.appendChild(link);
 
                             // Tworzenie przycisku "-"
                             var removeButton = document.createElement("button");
@@ -59,7 +67,12 @@
                                 resultsDiv.innerHTML = ""; // Wyczyść poprzednie wyniki
                                 data.forEach(drug => {
                                     var drugElement = document.createElement("div");
-                                    drugElement.textContent = drug.productName + " (" + drug.commonName + ")";
+                                    var link = document.createElement('a');
+                                    link.href = drug.leafletUrl; // Ustawiamy href na leafletUrl
+                                    link.textContent = "recepta"; // Ustawiamy tekst linku
+
+                                    drugElement.textContent = drug.productName + " (" + drug.commonName + ")  ";
+                                    drugElement.appendChild(link);
 
                                     // Tworzenie przycisku "+"
                                     var addButton = document.createElement("button");
@@ -91,11 +104,22 @@
     </script>
 </head>
 <body>
-<p th:style="'color:blue '" onclick="window.location.href='/home'"> HOME </p>
-<h1>Drug Search</h1>
-<input type="text" id="searchInput" placeholder="Enter drug name">
-<div id="results"></div>
-<h2>Owned Drugs</h2>
-<div id="ownedDrugs"></div>
+<div th:replace="~{fragments/menu-fragment :: menu}"></div>
+
+<div class="container">
+    <h1 class="gradient-text">Drug Search</h1>
+    <p>Please add drugs which you regularly take</p>
+    <input type="text" id="searchInput" placeholder="Enter drug name">
+    <div id="results"></div>
+    <br>
+    <br>
+    <br>
+    <h2 class="gradient-text">Owned Drugs</h2>
+    <div id="ownedDrugs"></div>
+
+
+</div>
+
+<div th:replace="~{fragments/footer-fragment :: footer-fragment}"></div>
 </body>
 </html>

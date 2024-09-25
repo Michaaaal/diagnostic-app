@@ -2,10 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Info</title>
+    <link rel="stylesheet" th:href="@{/css/footer-fragment.css}">
+    <link rel="stylesheet" th:href="@{/css/menu-fragment.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
 <body>
-<p th:style="'color:blue '" onclick="window.location.href='/home'"> HOME </p>
-Info
+<div th:insert="~{fragments/menu-fragment :: menu}"></div>
+
+<div class="container">
+    App Description Inc...
+</div>
+
+<div th:insert="~{fragments/footer-fragment :: footer-fragment}"></div>
 </body>
 </html>

@@ -20,6 +20,11 @@ public class MedicDataController {
         return "account/medic-data/add-chronic-diseases";
     }
 
+    @GetMapping("/medic-data")
+    public String medicData() {
+        return "account/medic-data";
+    }
+
     @GetMapping("/add-drugs")
     public String addDrugs() {
         return "account/medic-data/add-drugs";
@@ -43,5 +48,15 @@ public class MedicDataController {
     @PostMapping("/submit-personal-info")
     public String submitPersonalInfo(@ModelAttribute PersonalDataDTO personalDataDTO, @CookieValue(name = "refreshToken") String refreshToken, RedirectAttributes redirectAttributes) {
         return accountService.addPersonalData(personalDataDTO, refreshToken, redirectAttributes);
+    }
+
+    @GetMapping("/upgrade-account")
+    public String upgradeAccount(){
+        return "account/upgrade-account";
+    }
+
+    @GetMapping("/info")
+    public String info(){
+        return "/others/info";
     }
 }

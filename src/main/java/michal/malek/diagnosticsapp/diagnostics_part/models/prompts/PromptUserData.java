@@ -1,8 +1,9 @@
-package michal.malek.diagnosticsapp.diagnostics_part.models;
+package michal.malek.diagnosticsapp.diagnostics_part.models.prompts;
 
 import michal.malek.diagnosticsapp.medic_data.models.UserData;
 
 public class PromptUserData extends UserData {
+
     @Override
     public String toString() {
         return "DATA SET- " +
@@ -11,8 +12,8 @@ public class PromptUserData extends UserData {
                 ", height-" + height +
                 ", gender-'" + gender + '\'' +
                 ", chronicDiseaseSet-" + getChronicDiseaseSetPrompt() +
-                ", drugSet-" + getDrugsPrompt() +
-                ", diagnosticTestList-" + getDiagnosticTestsPrompt() ;
+                ", drugSet-" + getDrugsPrompt();
+
     }
 
     private String getChronicDiseaseSetPrompt(){
@@ -35,8 +36,4 @@ public class PromptUserData extends UserData {
         }return "Lack of drugs";
     }
 
-    private String getDiagnosticTestsPrompt(){
-        //TODO
-        return "lack of diagnostic tests";
-    }
 }

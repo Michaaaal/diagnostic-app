@@ -1,26 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" href="../../static/img/icon.png" type="image/png">
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>DiagnoseYourself</title>
+    <link rel="stylesheet" th:href="@{/css/footer-fragment.css}">
+    <link rel="stylesheet" th:href="@{/css/menu-fragment.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
 <body>
-HOME
-<p th:if="${message}" th:text="${message.message}" th:style="'color: ' + ${message.type.color}"></p>
-<p th:if="${userEmail}" th:text="${userEmail}"></p>
+<div th:insert="~{fragments/menu-fragment :: menu}"></div>
 
-<p th:style="'color:blue '" onclick="window.location.href='/add-personal-data'"> add-personal-data </p>
-<p th:style="'color:blue '" onclick="window.location.href='/add-drugs'"> add-drugs </p>
-<p th:style="'color:blue '" onclick="window.location.href='/add-chronic-diseases'"> add-chronic-diseases </p>
-<p th:style="'color:blue '" onclick="window.location.href='/add-diagnostic-tests'"> add-diagnostic-tests </p>
-<p th:style="'color:blue '" onclick="window.location.href='/account/admin/dashboard'"> admin-dashboard </p>
-<form th:action="@{/logout}" method="get">
-    <button type="submit">Logout</button>
-</form>
+<div class="container">
+    <img src="/img/text-icon.png" width="50%" alt="Logo">
 
-<h2>Zadowoleni klienci<br></h2>
-MARIUSZ Z RASZEI:<br>
-<img src="/raszei.jpg" alt="sss" width="354">
+    <!-- Welcome message -->
+    <div class="welcome-message">
+        <p class="gradient-text" th:if="${userEmail}" th:text="'Welcome Back, ' + ${userEmail}"></p>
+    </div>
 
+    <!-- Page Description -->
+    <div class="page-description">
+        <p>Welcome to DiagnoseYourself! Here, you can easily diagnose your health symptoms, monitor your well-being,<br> and get personalized insights to help you make informed decisions about your health. Explore our tools and resources to take charge of your health today.</p>
+        <p>Please Make sure to update your medic data before diagnosing yourself.</p>
+    </div>
+</div>
+
+<div th:insert="~{fragments/footer-fragment :: footer-fragment}"></div>
 </body>
 </html>

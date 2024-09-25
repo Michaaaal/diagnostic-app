@@ -8,7 +8,9 @@ import michal.malek.diagnosticsapp.medic_data.utills.GoogleDriveAuthorizeUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.security.GeneralSecurityException;
 import java.util.List;
 
@@ -56,5 +58,18 @@ public class GoogleDriveService {
 
     }
 
+    public java.io.File getFileByID(String fileDriveId) throws IOException {
+
+        File fileMetadata = driveService.files().get(fileDriveId).execute();
+
+        java.io.File tempFile = new java.io.File(System.getProperty("java.io.tmpdir"), fileMetadata.getName());
+
+        try (OutputStream outputStream = new FileOutputStream(tempFile)) {
+            driveService.files().get(fileDriveId)
+                    .executeMediaAndDownloadTo(outputStream);
+        }
+
+        return tempFile;
+    }
 
 }

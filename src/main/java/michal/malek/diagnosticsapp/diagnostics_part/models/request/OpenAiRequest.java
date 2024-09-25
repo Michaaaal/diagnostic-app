@@ -1,10 +1,9 @@
-package michal.malek.diagnosticsapp.diagnostics_part.models;
+package michal.malek.diagnosticsapp.diagnostics_part.models.request;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -15,11 +14,6 @@ public class OpenAiRequest {
     private String model;
     private List<Message> messages;
     private int max_tokens;
+    private final int n = 1;
 
-
-
-    public String toJson() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.writeValueAsString(this);
-    }
 }

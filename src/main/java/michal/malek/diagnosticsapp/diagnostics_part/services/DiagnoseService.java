@@ -8,6 +8,7 @@ import michal.malek.diagnosticsapp.auth.repositories.UserRepository;
 import michal.malek.diagnosticsapp.auth.services.JWTService;
 import michal.malek.diagnosticsapp.core.models.AppResponse;
 import michal.malek.diagnosticsapp.core.models.ResponseType;
+import michal.malek.diagnosticsapp.core.models.UserDiagnoseDTO;
 import michal.malek.diagnosticsapp.core.models.UserEntity;
 import michal.malek.diagnosticsapp.core.utills.JsonUtil;
 import michal.malek.diagnosticsapp.diagnostics_part.mappers.DiagnoseMessageMapper;
@@ -20,18 +21,17 @@ import michal.malek.diagnosticsapp.diagnostics_part.models.response.OpenAiRespon
 import michal.malek.diagnosticsapp.diagnostics_part.repositories.DiagnoseEntityRepository;
 import michal.malek.diagnosticsapp.medic_data.models.UserData;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class Facade {
+public class DiagnoseService {
 
     private final OpenAiService openAiService;
     private final JWTService jwtService;
@@ -39,16 +39,15 @@ public class Facade {
     private final PromptService promptService;
     private final DiagnoseEntityRepository diagnoseEntityRepository;
 
+    //TODO REFACTOR
     @Transactional
     public String diagnose(String refreshToken, String medicalInterview, RedirectAttributes redirectAttributes, Long diagnoseEntityId, String chatType) throws JsonProcessingException {
         //System.out.println(chatType);
         ChatModelType chatModelType = ChatModelType.valueOf(chatType);
 
-
         if(Objects.equals(medicalInterview, "")){
-        //TODO
             redirectAttributes.addFlashAttribute("message", new AppResponse("NO MEDICAL INTERVIEW", ResponseType.FAILURE));
-            return "redirect:/home";
+            return "redirect:/diagnose";
         }
 
         String claimUserUid = jwtService.getClaimUserUid(refreshToken);
@@ -61,26 +60,24 @@ public class Facade {
             userRepository.saveAndFlush(userEntity);
         }
 
-
-
-
         UserData userData = userEntity.getUserData();
-
         DiagnoseEntity diagnoseEntity;
         List<Message> messages;
         if(diagnoseEntityId == null || diagnoseEntityId == 0){
 
             diagnoseEntity = new DiagnoseEntity();
             diagnoseEntity.setUserUid(claimUserUid);
-            diagnoseEntity.setName(String.copyValueOf(medicalInterview.toCharArray(),0,40) + "...");
+            if(medicalInterview.length()>=30) {
+                diagnoseEntity.setName(String.copyValueOf(medicalInterview.toCharArray(),0,29) + "...");
+            }else{
+                diagnoseEntity.setName("diagnose");
+            }
             try {
                 messages = promptService.promptConstructor(userData, medicalInterview);
             } catch (IOException e) {
-                //TODO
-                throw new RuntimeException(e);
+                redirectAttributes.addFlashAttribute("message", new AppResponse("Something went wrong (promptConstructor)", ResponseType.ERROR));
+                return "redirect:/diagnose";
             }
-
-
         }else{
 
             Optional<DiagnoseEntity> byId = diagnoseEntityRepository.findById(diagnoseEntityId);
@@ -91,9 +88,8 @@ public class Facade {
                 diagnoseEntity.setDiagnoseMessageEntityList(diagnoseMessageEntityList);
                 messages = DiagnoseMessageMapper.INSTANCE.toMessageList(diagnoseMessageEntityList);
             }else{
-                //TODO
-                redirectAttributes.addFlashAttribute("message", new AppResponse("NO MEDICAL INTERVIEW", ResponseType.FAILURE));
-                return "redirect:/home";
+                redirectAttributes.addFlashAttribute("message", new AppResponse("Cannot find diagnose", ResponseType.ERROR));
+                return "redirect:/diagnose";
             }
 
         }
@@ -115,12 +111,11 @@ public class Facade {
 
         } catch (Exception e) {
             e.printStackTrace();
-            redirectAttributes.addFlashAttribute("message", new AppResponse("NO MEDICAL INTERVIEW", ResponseType.FAILURE));
+            redirectAttributes.addFlashAttribute("message", new AppResponse("CHAT API FAILURE, please try later", ResponseType.ERROR));
             return "redirect:/diagnose";
         }
 
     }
-
 
 
 
@@ -139,5 +134,28 @@ public class Facade {
             //TODO LOG
             throw new RuntimeException(e);
         }
+    }
+
+    public String listDiagnoses(String refreshToken, Model model) {
+        String claimUserUid = jwtService.getClaimUserUid(refreshToken);
+        List<DiagnoseEntity> diagnoses = diagnoseEntityRepository.findAllByUserUid(claimUserUid);
+        model.addAttribute("diagnoses", diagnoses);
+        return "diagnostics/chose-diagnose";
+    }
+
+    public String viewDiagnose(Long id, RedirectAttributes redirectAttributes) {
+        Optional<DiagnoseEntity> diagnose = diagnoseEntityRepository.findById(id);
+        if(diagnose.isEmpty()) {
+            redirectAttributes.addFlashAttribute("message", new AppResponse("NO SUCH DIAGNOSE", ResponseType.FAILURE));
+            return "redirect:/diagnose";
+        }
+        redirectAttributes.addFlashAttribute("diagnose", diagnose.get());
+        return "redirect:/diagnose";
+    }
+
+    public UserDiagnoseDTO diagnoseTemplate(String refreshToken) {
+        String uid = jwtService.getClaimUserUid(refreshToken);
+        UserEntity byUid = userRepository.findByUid(uid);
+        return new UserDiagnoseDTO(byUid.getTokenAmount(), byUid.getEmail());
     }
 }

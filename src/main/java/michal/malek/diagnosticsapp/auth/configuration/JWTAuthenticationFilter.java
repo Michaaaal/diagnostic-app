@@ -29,7 +29,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     private final JWTService jwtService;
     private final CookieService cookieService;
-    private final List<String> openResources = List.of("/logout","/auth-callback","/reset-password-post","/reset-password","/retrieve-password-start","/logout","/account-activate","/login","/login-post","/register","/register-post", "/static/", "/favicon.ico","/retrieve-password");
+    private final List<String> openResources = List.of("/fonts","/img","/logout","/auth-callback","/reset-password-post","/reset-password","/retrieve-password-start","/logout","/account-activate","/login","/login-post","/register","/register-post", "/static", "/favicon.ico","/retrieve-password","/css");
     @Value("${jwt.exp}")
     private int jwtExp;
     @Value("${jwt.refresh.exp}")
@@ -42,6 +42,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         for (String openResource : openResources) {
             if(path.contains(openResource)) {
+                System.out.println("JWT OPEN FILTER - URL: " + request.getRequestURI() + " Method: " + request.getMethod());
                 filterChain.doFilter(request, response);
                 return;
             }

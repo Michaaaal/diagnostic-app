@@ -1,15 +1,102 @@
+@font-face {
+    font-family: 'Permanent Marker';
+    src: url("../fonts/PermanentMarker-Regular.ttf");
+    font-weight: normal;
+    font-style: normal;
+}
+
 body {
-    background: linear-gradient(to right, #ff7e5f, #feb47b); /* Gradient od lewej do prawej */
+    /*background:linear-gradient(to right, #2ecc71, #1abc9c, #16a085);*/
+    background:linear-gradient(to right, rgb(0, 0, 0), rgba(15, 46, 45, 0.98), #000000);
+    line-height: 1;
     margin: 0; /* Usuwa domyślne marginesy */
     height: 100vh; /* Wysokość na 100% widoku */
     color: #333; /* Kolor tekstu, jeśli potrzebujesz */
-    font-family: Arial, sans-serif; /* Ustawienia czcionki */
+    grid-template-rows: auto 1fr auto;
+    display: grid;
+}
+
+html{
+    height: 100%;
+}
+
+.gradient-text {
+    background: linear-gradient(to right, #33a499, #4ac1c0, #4e89d8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+    font-size: 25px;
+    font-family: 'Permanent Marker',serif;
+    -webkit-text-stroke: 0.5px black;
+}
+
+.p{
+    background: linear-gradient(to right, #33a499, #4ac1c0, #4e89d8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+    font-size: 25px;
+    font-family: 'Permanent Marker',serif;
+    -webkit-text-stroke: 0.5px black;
+    width: 40%;
+    margin-left: 30%;
+    border: 1px white solid;
+    padding: 1%;
+    border-radius: 10px;
+}
+
+.p:hover {
+    background: linear-gradient(to right, #33a499, #4ac1c0, #4e89d8);
+    -webkit-text-stroke: 1px white;
 }
 
 .container {
-    background-color: #333; /* Ten sam kolor tła co w menu */
+    justify-content: center;
+    text-align: center;
+    background-color: #222; /* Ten sam kolor tła co w menu */
+    font-family: "Calibri Light";
+    font-size: 16px;
     width: 75vw; /* Szerokość kontenera na 75% szerokości widoku */
-    margin: 20px auto; /* Wyśrodkowuje kontener z marginesem na górze i dole */
+    margin: 80px auto 20px;/* Wyśrodkowuje kontener z marginesem na górze i dole */
     padding: 20px; /* Wewnętrzne odstępy */
-    color: white; /* Kolor tekstu wewnątrz kontenera */
+    color: #ffffff; /* Kolor tekstu wewnątrz kontenera */
+    border-radius: 20px;
+    box-sizing: border-box;
+}
+
+button {
+    background: linear-gradient(to right, #33a499, #4ac1c0, #4e89d8);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    font-family: 'Permanent Marker', serif;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background: linear-gradient(to right,  #4ac1c0, #33a499,#4e89d8);
+}
+
+input {
+    width: 40%;
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #e1dddd;
+    border-radius: 4px;
+}
+
+a{
+    color: white;
+}
+
+a.tooltip {
+    position: relative;
+    text-decoration: none;
+    color: #ffffff;
+    padding: 5px;
 }

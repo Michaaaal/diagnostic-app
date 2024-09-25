@@ -1,10 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Update Medic Data</title>
+    <link rel="stylesheet" th:href="@{/css/footer-fragment.css}">
+    <link rel="stylesheet" th:href="@{/css/menu-fragment.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
 <body>
-$END$
+<div th:replace="~{fragments/menu-fragment :: menu}"></div>
+
+<div class="container">
+    <p class="p" th:style="'color:blue '" onclick="window.location.href='/add-personal-data'"> add-personal-data </p>
+    <p class="p" th:style="'color:blue '" onclick="window.location.href='/add-drugs'"> add-drugs </p>
+    <p class="p" th:style="'color:blue '" onclick="window.location.href='/add-chronic-diseases'"> add-chronic-diseases </p>
+<!--    <p class="p" th:style="'color:blue '" onclick="window.location.href='/add-diagnostic-tests'"> add-diagnostic-tests </p>-->
+
+    <br><br>
+    <p>Adding medic data will increase effectiveness of your diagnosis, please add only actual information and keep them updated </p>
+</div>
+
+
+
+<div th:replace="~{fragments/footer-fragment :: footer-fragment}"></div>
+
 </body>
 </html>

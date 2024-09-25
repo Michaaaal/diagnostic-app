@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prześlij plik diagnostyczny</title>
-
+    <title>Add diagnostic Tests</title>
+    <link rel="stylesheet" th:href="@{/css/footer-fragment.css}">
+    <link rel="stylesheet" th:href="@{/css/menu-fragment.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             // Function to fetch and display the diagnostic tests
@@ -55,12 +57,16 @@
 
 </head>
 <body>
-<p th:style="'color:blue '" onclick="window.location.href='/home'"> HOME </p>
-<h2>Prześlij plik diagnostyczny</h2>
+<div th:replace="~{fragments/menu-fragment :: menu}"></div>
+
+<div class="container">
+
+<h2 class="gradient-text">Add diagnostic Tests</h2>
 <p th:if="${message}" th:text="${message.message}" th:style="'color: ' + ${message.type.color}"></p>
-<form action="/add-diagnostic-test" method="post" enctype="multipart/form-data">
-    <label for="diagnosticTestType">Wybierz typ badania:</label>
-    <select id="diagnosticTestType" name="diagnosticTestType" required>
+
+    <form action="/add-diagnostic-test" method="post" enctype="multipart/form-data">
+    <label for="diagnosticTestType">Wybierz typ badania:</label><br>
+    <select  style="width: 20%;padding: 5px" id="diagnosticTestType" name="diagnosticTestType" required>
         <option value="MORPHOLOGY">MORPHOLOGY</option>
         <option value="URINE">URINE</option>
         <option value="GLUCOSE">GLUCOSE</option>
@@ -71,14 +77,16 @@
         <option value="LIPIDOGRAM">LIPIDOGRAM</option>
     </select>
     <br><br>
-    <label for="file">Wybierz plik PDF:</label>
-    <input type="file" id="file" name="file" accept=".pdf" required>
+    <label for="file" >Wybierz plik PDF:</label><br>
+    <input type="file"  id="file" name="file" accept=".pdf" required>
     <br><br>
-    <input type="submit" value="Prześlij">
+        <button type="submit" style="width: 40%" >Send</button>
 </form>
-
-<h2>Owned Tests</h2>
+<br><br><br>
+<h2 class="gradient-text">Owned Tests</h2>
 <div id="ownedTests"></div>
+</div>
 
+<div th:replace="~{fragments/footer-fragment :: footer-fragment}"></div>
 </body>
 </html>

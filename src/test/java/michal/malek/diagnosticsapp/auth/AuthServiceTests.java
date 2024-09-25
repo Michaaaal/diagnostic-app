@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import jakarta.servlet.http.Cookie;
-import michal.malek.diagnosticsapp.auth.models.AuthResponse;
-import michal.malek.diagnosticsapp.auth.models.ResponseType;
+import michal.malek.diagnosticsapp.core.models.AppResponse;
+import michal.malek.diagnosticsapp.core.models.ResponseType;
 import michal.malek.diagnosticsapp.auth.repositories.UserRepository;
 import michal.malek.diagnosticsapp.auth.services.AuthService;
 import michal.malek.diagnosticsapp.auth.services.CookieService;
@@ -68,8 +68,8 @@ public class AuthServiceTests {
 
         assertEquals("redirect:/home", result);
         assertEquals(2, response.getCookies().length);
-        assertEquals("Welcome Back", ((AuthResponse)redirectAttributes.getFlashAttributes().get("message")).getMessage());
-        assertEquals(ResponseType.SUCCESS, ((AuthResponse)redirectAttributes.getFlashAttributes().get("message")).getType());
+        assertEquals("Welcome Back", ((AppResponse)redirectAttributes.getFlashAttributes().get("message")).getMessage());
+        assertEquals(ResponseType.SUCCESS, ((AppResponse)redirectAttributes.getFlashAttributes().get("message")).getType());
     }
 
     @Test
@@ -82,8 +82,8 @@ public class AuthServiceTests {
         String result = loginService.login(email, password, response, redirectAttributes);
 
         assertEquals("redirect:/login", result);
-        assertEquals("Login Failed", ((AuthResponse)redirectAttributes.getFlashAttributes().get("message")).getMessage());
-        assertEquals(ResponseType.FAILURE, ((AuthResponse)redirectAttributes.getFlashAttributes().get("message")).getType());
+        assertEquals("Login Failed", ((AppResponse)redirectAttributes.getFlashAttributes().get("message")).getMessage());
+        assertEquals(ResponseType.FAILURE, ((AppResponse)redirectAttributes.getFlashAttributes().get("message")).getType());
     }
 
     @Test
@@ -100,7 +100,7 @@ public class AuthServiceTests {
         String result = loginService.login(email, password, response, redirectAttributes);
 
         assertEquals("redirect:/login", result);
-        assertEquals("Login Failed", ((AuthResponse)redirectAttributes.getFlashAttributes().get("message")).getMessage());
-        assertEquals(ResponseType.FAILURE, ((AuthResponse)redirectAttributes.getFlashAttributes().get("message")).getType());
+        assertEquals("Login Failed", ((AppResponse)redirectAttributes.getFlashAttributes().get("message")).getMessage());
+        assertEquals(ResponseType.FAILURE, ((AppResponse)redirectAttributes.getFlashAttributes().get("message")).getType());
     }
 }

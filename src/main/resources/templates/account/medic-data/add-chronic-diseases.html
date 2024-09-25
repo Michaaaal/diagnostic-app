@@ -2,6 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Chronic Diesases Search</title>
+    <link rel="stylesheet" th:href="@{/css/footer-fragment.css}">
+    <link rel="stylesheet" th:href="@{/css/menu-fragment.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             // Funkcja do pobierania i wyświetlania dodanych lekarstw
@@ -91,11 +94,21 @@
     </script>
 </head>
 <body>
-<p th:style="'color:blue '" onclick="window.location.href='/home'"> HOME </p>
-<h1>Chronic Disease Search</h1>
+<div th:replace="~{fragments/menu-fragment :: menu}"></div>
+
+<div class="container">
+
+<h1 class="gradient-text">Chronic Disease Search</h1>
 <input type="text" id="searchInput" placeholder="Enter drug name">
 <div id="results"></div>
-<h2>Owned Diseases</h2>
+    <br>
+    <br>
+    <br>
+<h2 class="gradient-text">Owned Diseases</h2>
 <div id="ownedDrugs"></div>
+
+</div>
+
+<div th:replace="~{fragments/footer-fragment :: footer-fragment}"></div>
 </body>
 </html>

@@ -1,10 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <title>Chose Diagnoses</title>
+    <link rel="stylesheet" th:href="@{/css/footer-fragment.css}">
+    <link rel="stylesheet" th:href="@{/css/menu-fragment.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
 <body>
-$END$
+<div th:replace="~{fragments/menu-fragment :: menu}"></div>
+
+<div class="container">
+<h1>Diagnoses</h1>
+<ul>
+    <li th:each="diagnose : ${diagnoses}">
+        <form th:action="@{/chose-diagnose/{id}(id=${diagnose.id})}" method="get">
+            <p th:text="${diagnose.date}"></p>
+            <button type="submit" th:text="${diagnose.name}">Diagnose Name</button>
+        </form>
+    </li>
+</ul>
+</div>
+
+<div th:replace="~{fragments/footer-fragment :: footer-fragment}"></div>
 </body>
 </html>

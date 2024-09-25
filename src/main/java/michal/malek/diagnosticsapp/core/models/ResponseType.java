@@ -1,4 +1,4 @@
-package michal.malek.diagnosticsapp.auth.models;
+package michal.malek.diagnosticsapp.core.models;
 
 import lombok.Getter;
 

@@ -1,4 +1,4 @@
-package michal.malek.diagnosticsapp.diagnostics_part.utills;
+package michal.malek.diagnosticsapp.core.utills;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

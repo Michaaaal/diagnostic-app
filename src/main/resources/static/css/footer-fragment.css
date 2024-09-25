@@ -1,0 +1,70 @@
+footer {
+    background-color: #222; /* Kolor tła stopki */
+    color: #ffffff; /* Kolor tekstu w stopce */
+    padding: 20px; /* Wewnętrzne odstępy */
+    text-align: center; /* Wyśrodkowanie tekstu */
+    position: relative; /* Pozycjonowanie względne */
+    bottom: 0; /* Ustawienie stopki na dole strony */
+    width: 100%; /* Szerokość na 100% widoku */
+    box-sizing: border-box;
+    font-family: 'Permanent Marker',serif;
+    text-shadow:
+            1px 1px 0 #4ac1c0,
+            -1px -1px 0 #000,
+            1px -1px 0 #000,
+            -1px 1px 0 #000;
+}
+
+.footer-container {
+    margin: 0 auto; /* Wyśrodkowanie kontenera */
+    padding: 0 20px; /* Wewnętrzne odstępy kontenera */
+}
+
+footer ul li a:hover {
+    text-decoration: underline; /* Podkreślenie linków podczas najeżdżania */
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin: 10px 0;
+}
+
+a.tooltip {
+    position: relative;
+    text-decoration: none;
+    color: #ffffff;
+    padding: 5px;
+}
+
+.tooltip .tooltiptext {
+
+    visibility: hidden;
+    width: 200px;
+    background-color: #606060;
+    color: #fff;
+    text-align: center;
+    border-radius: 10px;
+    padding: 10px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%; /* Pozicionowanie nad elementem */
+    left: 50%;
+    margin-left: -100px; /* Środkowanie */
+    opacity: 0;
+    transition: opacity 0.3s;
+    text-shadow:
+            1px 1px 0 #000000,
+            -1px -1px 0 #000,
+            1px -1px 0 #000,
+            -1px 1px 0 #000;
+}
+
+.tooltip:hover .tooltiptext {
+    font-family: 'Agency FB',serif;
+    visibility: visible;
+    opacity: 1;
+}

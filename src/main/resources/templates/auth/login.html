@@ -2,37 +2,45 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Login</title>
-    <script type="text/javascript">
-        function redirectToGoogle() {
-            var googleUrl = document.getElementById("googleLoginButton").getAttribute("data-url");
-            window.location.href = googleUrl;
-        }
-    </script>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/login.css}">
 </head>
 <body>
-<h1>Login Page</h1>
-<p th:if="${message}" th:text="${message.message}" th:style="'color: ' + ${message.type.color}"></p>
-<form th:action="@{/login-post}" method="post">
-    <div>
-        <label for="email">Email:</label>
-        <input type="text" id="email" name="email" required>
-    </div>
-    <div>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-    </div>
-    <div>
-        <button type="submit">Login</button>
-    </div>
-    <div>
-        <button type="button" onclick="window.location.href='/register'">Register</button>
-    </div>
-</form>
-<p onclick="window.location.href='/retrieve-password'"> forgot your password? </p>
-
-<div>
-    <button type="button" id="googleLoginButton" th:data-url="${googleUrl}" onclick="redirectToGoogle()">Login with Google</button>
+<div class="main-container">
+<div id="text-logo-container">
+    <img src="/img/text-icon.png" id="text-logo">
 </div>
-
+<div class="container">
+    <p th:if="${message}" th:text="${message.message}" th:style="'color: ' + ${message.type.color}"></p>
+    <form th:action="@{/login-post}" method="post">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div class="form-group">
+            <button type="submit">Login</button>
+        </div>
+        <div class="form-group">
+            <button type="button" onclick="window.location.href='/register'">Register</button>
+        </div>
+    </form>
+    <div class="forgot-password">
+        <p onclick="window.location.href='/retrieve-password'">Forgot your password?</p>
+    </div>
+    <div class="social-login">
+        <button type="button" id="googleLoginButton" th:data-url="${googleUrl}" onclick="redirectToGoogle()">Login with Google</button>
+    </div>
+</div>
+</div>
+<script type="text/javascript">
+    function redirectToGoogle() {
+        var googleUrl = document.getElementById("googleLoginButton").getAttribute("data-url");
+        window.location.href = googleUrl;
+    }
+</script>
 </body>
 </html>

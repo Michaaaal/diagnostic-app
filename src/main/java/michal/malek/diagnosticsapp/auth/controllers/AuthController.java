@@ -1,5 +1,6 @@
 package michal.malek.diagnosticsapp.auth.controllers;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,10 @@ public class AuthController {
 
 
     @GetMapping("/login")
-    public String login(Model model) {
+    public String login(Model model,@CookieValue(name = "refreshToken", required = false) Cookie refreshCookie) {
+        if (refreshCookie != null) {
+            return "redirect:/home";
+        }
         return authService.loginTemplate(model);
     }
 

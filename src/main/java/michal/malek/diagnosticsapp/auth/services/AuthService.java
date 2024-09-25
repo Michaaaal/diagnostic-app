@@ -1,7 +1,6 @@
 package michal.malek.diagnosticsapp.auth.services;
 
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -10,11 +9,11 @@ import michal.malek.diagnosticsapp.auth.models.*;
 import michal.malek.diagnosticsapp.auth.repositories.RetrievePasswordOperationRepository;
 import michal.malek.diagnosticsapp.auth.repositories.UserRepository;
 import michal.malek.diagnosticsapp.core.mappers.UserMapper;
+import michal.malek.diagnosticsapp.core.models.AppResponse;
+import michal.malek.diagnosticsapp.core.models.ResponseType;
 import michal.malek.diagnosticsapp.core.models.UserEntity;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
@@ -25,7 +24,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.Date;
 import java.util.List;
@@ -69,7 +67,7 @@ public class AuthService {
                     }
 
                     if(!userByEmail.isGoogle()){
-                        redirectAttributes.addFlashAttribute("message", new AuthResponse("Account already created with this email", ResponseType.NOTIFICATION));
+                        redirectAttributes.addFlashAttribute("message", new AppResponse("Account already created with this email", ResponseType.NOTIFICATION));
                         return "redirect:/login";
                     }
 
@@ -83,20 +81,20 @@ public class AuthService {
                     response.addCookie(token);
                     response.addCookie(refresh);
 
-                    redirectAttributes.addFlashAttribute("message", new AuthResponse("Welcome Back", ResponseType.SUCCESS));
+                    redirectAttributes.addFlashAttribute("message", new AppResponse("Welcome Back", ResponseType.SUCCESS));
                     return "redirect:/home";
 
                 }else {
-                    redirectAttributes.addFlashAttribute("message",new AuthResponse("AUTHORIZATION WENT WRONG 1",ResponseType.FAILURE));
+                    redirectAttributes.addFlashAttribute("message",new AppResponse("AUTHORIZATION WENT WRONG 1",ResponseType.FAILURE));
                     return "redirect:/login";
                 }
             }catch( AuthenticationException authenticationException){
-                redirectAttributes.addFlashAttribute("message",new AuthResponse("AUTHORIZATION WENT WRONG 2",ResponseType.FAILURE));
+                redirectAttributes.addFlashAttribute("message",new AppResponse("AUTHORIZATION WENT WRONG 2",ResponseType.FAILURE));
                 return "redirect:/login";
             }
 
         }catch (Exception e){
-            redirectAttributes.addFlashAttribute("message",new AuthResponse("AUTHORIZATION WENT WRONG",ResponseType.FAILURE));
+            redirectAttributes.addFlashAttribute("message",new AppResponse("AUTHORIZATION WENT WRONG",ResponseType.FAILURE));
             return "redirect:/login";
         }
 
@@ -114,7 +112,7 @@ public class AuthService {
         UserEntity byEmail = userRepository.findByEmail(email);
         if(byEmail != null){
             if(byEmail.isGoogle()){
-                redirectAttributes.addFlashAttribute("message", new AuthResponse("Please login with google", ResponseType.NOTIFICATION));
+                redirectAttributes.addFlashAttribute("message", new AppResponse("Please login with google", ResponseType.NOTIFICATION));
                 return "redirect:/login";
             }
             if(byEmail.isEnabled()){
@@ -124,15 +122,15 @@ public class AuthService {
                     response.addCookie( cookieService.generateCookie("token", jwtService.generateToken(uid, byEmail.getUserType().toString(), userEmail, jwtExp), jwtExp));
                     response.addCookie( cookieService.generateCookie("refreshToken", jwtService.generateToken(uid, byEmail.getUserType().toString(), userEmail,jwtRefreshExp) , jwtRefreshExp));
 
-                    redirectAttributes.addFlashAttribute("message", new AuthResponse("Welcome Back", ResponseType.SUCCESS));
+                    redirectAttributes.addFlashAttribute("message", new AppResponse("Welcome Back", ResponseType.SUCCESS));
                     return "redirect:/home";
                 }
             }else {
-                redirectAttributes.addFlashAttribute("message", new AuthResponse("Please Activate your account via email", ResponseType.NOTIFICATION));
+                redirectAttributes.addFlashAttribute("message", new AppResponse("Please Activate your account via email", ResponseType.NOTIFICATION));
                 return "redirect:/login";
             }
         }
-        redirectAttributes.addFlashAttribute("message", new AuthResponse("Login Failed", ResponseType.FAILURE));
+        redirectAttributes.addFlashAttribute("message", new AppResponse("Login Failed", ResponseType.FAILURE));
         return "redirect:/login";
     }
 
@@ -145,7 +143,7 @@ public class AuthService {
                     .orElse(null)
             );
             if(errorMessage == null){errorMessage = "Something went wrong";}
-            redirectAttributes.addFlashAttribute("message", new AuthResponse(errorMessage, ResponseType.FAILURE));
+            redirectAttributes.addFlashAttribute("message", new AppResponse(errorMessage, ResponseType.FAILURE));
             return "redirect:/register";
         }
 
@@ -153,7 +151,7 @@ public class AuthService {
         try{
              isGood = this.registerValidate(dto);
         }catch (UserWithEmailAlreadyExist e){
-            redirectAttributes.addFlashAttribute("message", new AuthResponse("Account with this email already exist", ResponseType.FAILURE));
+            redirectAttributes.addFlashAttribute("message", new AppResponse("Account with this email already exist", ResponseType.FAILURE));
             return "redirect:/register";
         }
 
@@ -164,15 +162,15 @@ public class AuthService {
                 emailService.sendActivation(userEntity);
             }catch (Exception e){
                 System.out.println(e.getMessage());
-                redirectAttributes.addFlashAttribute("message", new AuthResponse("Something went wrong while sending activation email", ResponseType.ERROR));
+                redirectAttributes.addFlashAttribute("message", new AppResponse("Something went wrong while sending activation email", ResponseType.ERROR));
                 return "redirect:/register";
             }
 
             userRepository.saveAndFlush(userEntity);
-            redirectAttributes.addFlashAttribute("message", new AuthResponse("Confirm email on your inbox", ResponseType.SUCCESS));
+            redirectAttributes.addFlashAttribute("message", new AppResponse("Confirm email on your inbox", ResponseType.SUCCESS));
             return "redirect:/login";
         }
-        redirectAttributes.addFlashAttribute("message", new AuthResponse("Passwords dont match", ResponseType.FAILURE));
+        redirectAttributes.addFlashAttribute("message", new AppResponse("Passwords dont match", ResponseType.FAILURE));
         return "redirect:/register";
     }
 
@@ -189,10 +187,10 @@ public class AuthService {
         if(byUid != null){
             byUid.setEnabled(true);
             userRepository.saveAndFlush(byUid);
-            redirectAttributes.addFlashAttribute("message", new AuthResponse("Account activated", ResponseType.SUCCESS));
+            redirectAttributes.addFlashAttribute("message", new AppResponse("Account activated", ResponseType.SUCCESS));
             return "redirect:/login";
         }
-        redirectAttributes.addFlashAttribute("message", new AuthResponse("Activation went wrong please contact support", ResponseType.ERROR));
+        redirectAttributes.addFlashAttribute("message", new AppResponse("Activation went wrong please contact support", ResponseType.ERROR));
         return "redirect:/login";
     }
 
@@ -202,11 +200,11 @@ public class AuthService {
         if(byEmail != null){
 
             if(byEmail.isGoogle()){
-                redirectAttributes.addFlashAttribute("message", new AuthResponse("Account with this email does not exist", ResponseType.FAILURE));
+                redirectAttributes.addFlashAttribute("message", new AppResponse("Account with this email does not exist", ResponseType.FAILURE));
                 return "redirect:/login";
             }
             if(!byEmail.isEnabled()){
-                redirectAttributes.addFlashAttribute("message", new AuthResponse("Please first activate your account", ResponseType.ERROR));
+                redirectAttributes.addFlashAttribute("message", new AppResponse("Please first activate your account", ResponseType.ERROR));
                 return "redirect:/login";
             }
 
@@ -223,14 +221,14 @@ public class AuthService {
             try {
                 emailService.sendPasswordRecovery(byEmail ,retrievePasswordOperation.getUid());
             } catch (Exception e) {
-                redirectAttributes.addFlashAttribute("message", new AuthResponse("We cant send you email, please contact support", ResponseType.ERROR));
+                redirectAttributes.addFlashAttribute("message", new AppResponse("We cant send you email, please contact support", ResponseType.ERROR));
                 return "redirect:/retrieve-password";
             }
-            redirectAttributes.addFlashAttribute("message", new AuthResponse("Check your inbox in order to reset password", ResponseType.NOTIFICATION));
+            redirectAttributes.addFlashAttribute("message", new AppResponse("Check your inbox in order to reset password", ResponseType.NOTIFICATION));
             return "redirect:/login";
 
         }else {
-            redirectAttributes.addFlashAttribute("message", new AuthResponse("Account with this email does not exist", ResponseType.FAILURE));
+            redirectAttributes.addFlashAttribute("message", new AppResponse("Account with this email does not exist", ResponseType.FAILURE));
             return "redirect:/retrieve-password";
         }
 
@@ -240,25 +238,25 @@ public class AuthService {
     public String resetPassword(ResetPasswordDTO dto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         String operationUid = dto.getOperationUid();
         if (operationUid == null || operationUid.isEmpty()) {
-            redirectAttributes.addFlashAttribute("message", new AuthResponse("Something went wrong while getting uid please contact support", ResponseType.ERROR));
+            redirectAttributes.addFlashAttribute("message", new AppResponse("Something went wrong while getting uid please contact support", ResponseType.ERROR));
             return "redirect:/login";
         }
 
         RetrievePasswordOperation operation = retrievePasswordOperationRepository.findByUid(operationUid);
         if (operation == null) {
-            redirectAttributes.addFlashAttribute("message", new AuthResponse("Operation is outdated, please start over", ResponseType.ERROR));
+            redirectAttributes.addFlashAttribute("message", new AppResponse("Operation is outdated, please start over", ResponseType.ERROR));
             return "redirect:/login";
         }
 
         UserEntity user = userRepository.findByUid(operation.getUserUid());
         if (user == null) {
-            redirectAttributes.addFlashAttribute("message", new AuthResponse("Something went wrong while getting user from uid please contact support", ResponseType.ERROR));
+            redirectAttributes.addFlashAttribute("message", new AppResponse("Something went wrong while getting user from uid please contact support", ResponseType.ERROR));
             return "redirect:/login";
         }
 
         List<RetrievePasswordOperation> byUserUid = retrievePasswordOperationRepository.findByUserUid(user.getUid());
         if(byUserUid==null || byUserUid.isEmpty()){
-            redirectAttributes.addFlashAttribute("message", new AuthResponse("Reset operation is outdated", ResponseType.NOTIFICATION));
+            redirectAttributes.addFlashAttribute("message", new AppResponse("Reset operation is outdated", ResponseType.NOTIFICATION));
             return "redirect:/login";
         }
 
@@ -269,24 +267,24 @@ public class AuthService {
                     .orElse(null)
             );
             if(errorMessage == null){errorMessage = "Something went wrong";}
-            redirectAttributes.addFlashAttribute("message", new AuthResponse(errorMessage, ResponseType.FAILURE));
+            redirectAttributes.addFlashAttribute("message", new AppResponse(errorMessage, ResponseType.FAILURE));
             return "redirect:/reset-password?operationUid=" + operationUid;
         }
 
         if(!dto.getPassword().equals(dto.getPassword2())){
-            redirectAttributes.addFlashAttribute("message", new AuthResponse("Passwords dont match", ResponseType.FAILURE));
+            redirectAttributes.addFlashAttribute("message", new AppResponse("Passwords dont match", ResponseType.FAILURE));
             return "redirect:/reset-password?operationUid=" + operationUid;
         }
 
         if((passwordEncoder.matches(dto.getPassword(), user.getPassword()))){
-            redirectAttributes.addFlashAttribute("message", new AuthResponse("Password cannot be the same as old one", ResponseType.FAILURE));
+            redirectAttributes.addFlashAttribute("message", new AppResponse("Password cannot be the same as old one", ResponseType.FAILURE));
             return "redirect:/reset-password?operationUid=" + operationUid;
         }
 
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         userRepository.saveAndFlush(user);
         retrievePasswordOperationRepository.deleteAllByUserUid(user.getUid());
-        redirectAttributes.addFlashAttribute("message", new AuthResponse("Password changed", ResponseType.SUCCESS));
+        redirectAttributes.addFlashAttribute("message", new AppResponse("Password changed", ResponseType.SUCCESS));
         return "redirect:/login";
     }
 

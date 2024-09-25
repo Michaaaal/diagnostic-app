@@ -1,4 +1,4 @@
-package michal.malek.diagnosticsapp.diagnostics_part.models;
+package michal.malek.diagnosticsapp.diagnostics_part.models.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Message {
-    private String role ;
+    private String role;
     private String content;
 }

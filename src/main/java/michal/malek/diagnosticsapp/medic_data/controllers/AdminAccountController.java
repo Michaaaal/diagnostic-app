@@ -1,8 +1,8 @@
 package michal.malek.diagnosticsapp.medic_data.controllers;
 
 import lombok.RequiredArgsConstructor;
-import michal.malek.diagnosticsapp.auth.models.AuthResponse;
-import michal.malek.diagnosticsapp.auth.models.ResponseType;
+import michal.malek.diagnosticsapp.core.models.AppResponse;
+import michal.malek.diagnosticsapp.core.models.ResponseType;
 import michal.malek.diagnosticsapp.medic_data.services.AccountService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,7 +39,7 @@ public class AdminAccountController {
         try {
             accountService.listFilesOnGoogleDrive();
         } catch (IOException e) {
-            redirectAttributes.addFlashAttribute("message", new AuthResponse("Cant list files IO exception", ResponseType.ERROR));
+            redirectAttributes.addFlashAttribute("message", new AppResponse("Cant list files IO exception", ResponseType.ERROR));
             return "account/admin/dashboard";
         }
         return "account/admin/dashboard";
