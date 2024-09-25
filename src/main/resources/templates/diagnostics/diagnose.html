@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Voice to Text</title>
+</head>
+<body>
+<button id="toggle-record-btn">Start</button>
+<textarea id="result" rows="10" cols="50"></textarea>
+
+<script>
+    const button = document.getElementById('toggle-record-btn');
+    const result = document.getElementById('result');
+
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'pl-PL';
+    recognition.continuous = true;
+
+    let isRecording = false;
+
+    button.addEventListener('click', () => {
+        if (isRecording) {
+            recognition.stop();
+            button.textContent = 'Start';
+        } else {
+            recognition.start();
+            button.textContent = 'Stop';
+        }
+        isRecording = !isRecording;
+    });
+
+    recognition.onresult = (event) => {
+        const transcript = event.results[event.results.length - 1][0].transcript;
+        result.value += transcript + '\n';
+    };
+
+    recognition.onspeechend = () => {
+        recognition.stop();
+        button.textContent = 'Start';
+        isRecording = false;
+    };
+
+    recognition.onerror = (event) => {
+        console.error(event.error);
+        button.textContent = 'Start';
+        isRecording = false;
+    };
+</script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+body {
+    background: linear-gradient(to right, #ff7e5f, #feb47b); /* Gradient od lewej do prawej */
+    margin: 0; /* Usuwa domyślne marginesy */
+    height: 100vh; /* Wysokość na 100% widoku */
+    color: #333; /* Kolor tekstu, jeśli potrzebujesz */
+    font-family: Arial, sans-serif; /* Ustawienia czcionki */
+}
+
+.container {
+    background-color: #333; /* Ten sam kolor tła co w menu */
+    width: 75vw; /* Szerokość kontenera na 75% szerokości widoku */
+    margin: 20px auto; /* Wyśrodkowuje kontener z marginesem na górze i dole */
+    padding: 20px; /* Wewnętrzne odstępy */
+    color: white; /* Kolor tekstu wewnątrz kontenera */
+}

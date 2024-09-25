@@ -1,0 +1,129 @@
+Addison’s disease
+Asthma
+Bipolar mood disorder
+Bronchiectasis
+Cardiac dysrhythmias
+Cardiac failure
+Cardiomyopathy
+Chronic obstructive pulmonary disease
+Chronic renal disease
+Coronary artery disease
+Crohn’s disease (excl. biologicals such as Revellex*)
+Diabetes insipidus
+Diabetes mellitus Type 1
+Diabetes mellitus Type 2
+Epilepsy
+Glaucoma
+Haemophilia
+Hyperlipidaemia
+Hypertension
+Hypothyroidism
+Multiple sclerosis (excl. biologicals such as Avonex*, subject to protocols)
+Parkinson’s disease
+Rheumatoid arthritis (excl. biologicals such as Revellex* and Enbrel*)
+Schizophrenia
+Systemic lupus erythematosus
+Ulcerative colitis
+Acne
+Attention Deficit Hyperactivity Disorder
+Allergic rhinitis
+Eczema
+Pemphigus
+Psoriasis
+Acne
+Attention Deficit Hyperactivity Disorder
+Allergic rhinitis
+Ankylosing spondylitis
+Aplastic anaemia
+Benign prostatic hypertrophy
+Cushing’s disease
+Cystic fibrosis
+Dermatomyositis
+Eczema
+Gout
+Hypoparathyroidism
+Immunosuppression therapy for transplants
+Major depression
+Menopause
+Motor neuron disease
+Muscular dystrophy and other inherited myopathies
+Myasthenia gravis
+Narcolepsy
+Obsessive compulsive disorder
+Oncology - ancillary treatment
+Osteopenia
+Osteoporosis
+Other seizure disorders
+Paraplegia/Quadriplegia
+Pemphigus
+Pituitary micro-adenomas
+Post-traumatic stress syndrome
+Psoriasis
+Scleroderma
+Stroke
+Systemic sclerosis
+Thromboangiitis obliterans
+Thrombocytopenic purpura
+Unipolar disorder
+Valvular heart disease
+Fatigue syndrome
+Migraine
+Pain syndrome
+Sinusitis
+Hepatitis
+Pancreatitis
+Lymphocytic leukemia
+Kidney disease
+Prostatitis
+Urinary tract infections
+Gastritis
+Dermatitis
+Viral infections
+Otitis media
+Lymphedema
+Obstructive pulmonary disease (COPD)
+Hyperventilation syndrome
+Social anxiety disorder
+Constipation
+Sleep apnea
+Myeloid leukemia
+Bronchitis
+Hepatitis B and C
+Rheumatic heart disease
+Sciatica
+Inflammatory bowel disease (IBD)
+Allergic rhinitis
+Sclerosing cholangitis
+Hyperkalemia
+Vertigo
+Neck pain
+Osteoarthritis
+Interstitial lung disease
+Bowel disorders
+Inflammatory demyelinating polyneuropathy (CIDP)
+Fibromyalgia
+Raynaud's phenomenon
+Idiopathic urticaria
+Fatigue and immune dysfunction syndrome (CFIDS)
+Breast cancer
+Lung cancer
+Colorectal cancer
+Prostate cancer
+Leukemia
+Liver cancer
+Pancreatic cancer
+Ovarian cancer
+Stomach cancer
+Esophageal cancer
+Kidney cancer
+Thyroid cancer
+Bladder cancer
+Cervical cancer
+Head and neck cancer
+Multiple myeloma
+Melanoma
+Non-Hodgkin lymphoma
+Hodgkin lymphoma
+Soft tissue sarcoma
+Bone cancer
+Endometrial cancer
