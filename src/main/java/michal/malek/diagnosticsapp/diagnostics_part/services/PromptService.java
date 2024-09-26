@@ -11,7 +11,6 @@ import michal.malek.diagnosticsapp.diagnostics_part.models.request.Message;
 import michal.malek.diagnosticsapp.diagnostics_part.models.request.OpenAiRoles;
 import michal.malek.diagnosticsapp.medic_data.models.DiagnosticTest;
 import michal.malek.diagnosticsapp.medic_data.models.UserData;
-import michal.malek.diagnosticsapp.medic_data.services.GoogleDriveService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +22,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class PromptService {
-    private final GoogleDriveService googleDriveService;
 
     public List<Message> promptConstructor(UserData userData, String medicalInterview) throws IOException {
         PromptUserData promptUserData = UserDataMapper.INSTANCE.userDataToPromptUserData(userData);
@@ -45,17 +43,6 @@ public class PromptService {
             return "MEDICAL TESTS- lack of medical tests";
         }
 
-        for (DiagnosticTest diagnosticTest : diagnosticTestList) {
-            String driveId = diagnosticTest.getDriveId();
-            File fileByID = googleDriveService.getFileByID(driveId);
-            String content = PdfReader.readPDFContent(fileByID);
-
-            stringBuilder.append(diagnosticTest.getTestsType().toString());
-            stringBuilder.append("-");
-            stringBuilder.append(content);
-            stringBuilder.append(", ");
-
-        }
         return stringBuilder.toString();
     }
 }
