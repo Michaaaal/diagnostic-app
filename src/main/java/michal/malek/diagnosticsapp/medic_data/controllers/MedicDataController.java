@@ -35,11 +35,6 @@ public class MedicDataController {
         return "account/medic-data/add-diagnostic-tests";
     }
 
-    @PostMapping("add-diagnostic-test")
-    public String addDiagnosticTest(@RequestParam("file") MultipartFile multipartFile, @RequestParam String diagnosticTestType , RedirectAttributes redirectAttributes, @CookieValue String refreshToken) {
-        return accountService.addDiagnosticTest(multipartFile, diagnosticTestType,  redirectAttributes, refreshToken);
-    }
-
     @GetMapping("add-personal-data")
     public String displayAddPersonalData(Model model, @CookieValue(name="refreshToken") String refreshToken){
         return accountService.displayAddPersonalData(model, refreshToken);

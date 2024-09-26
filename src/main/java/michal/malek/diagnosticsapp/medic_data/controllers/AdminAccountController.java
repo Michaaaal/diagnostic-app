@@ -34,19 +34,5 @@ public class AdminAccountController {
         return "account/admin/dashboard";
     }
 
-    @GetMapping("/list")
-    public String test(RedirectAttributes redirectAttributes){
-        try {
-            accountService.listFilesOnGoogleDrive();
-        } catch (IOException e) {
-            redirectAttributes.addFlashAttribute("message", new AppResponse("Cant list files IO exception", ResponseType.ERROR));
-            return "account/admin/dashboard";
-        }
-        return "account/admin/dashboard";
-    }
 
-    @GetMapping("/delete-drive-file")
-    public String deleteDriveFile(RedirectAttributes redirectAttributes, @RequestParam String driveId) {
-        return accountService.deleteDriveFile(driveId, redirectAttributes);
-    }
 }

@@ -28,7 +28,6 @@ public class UserDataService {
     private final UserRepository userRepository;
     private final DrugRepository drugRepository;
     private final ChronicDiseaseRepository chronicDiseaseRepository;
-    private final GoogleDriveService googleDriveService;
     private final DiagnosticTestRepository diagnosticTestRepository;
 
 
@@ -85,28 +84,6 @@ public class UserDataService {
         return userData.getDiagnosticTestList();
     }
 
-    @Transactional
-    public boolean addDiagnosticTest(String userUid, MultipartFile pdf, DiagnosticsTestsType diagnosticsTestsType) {
-        char separator = '^';
-        String filePath = diagnosticsTestsType.toString().toLowerCase() + separator + userUid;
-
-        try {
-            File file = googleDriveService.multipartToDriveFile(pdf, filePath, "application/pdf");
-            String driveId = file.getId();
-
-            DiagnosticTest diagnosticTest = new DiagnosticTest(diagnosticsTestsType, filePath, driveId);
-            diagnosticTestRepository.saveAndFlush(diagnosticTest);
-
-            UserEntity byUid = userRepository.findByUid(userUid);
-            UserData userData = byUid.getUserData();
-            userData.getDiagnosticTestList().add(diagnosticTest);
-            userDataRepository.saveAndFlush(userData);
-
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
-    }
 
     @Transactional
     public void deleteFile(String driveId, String userUid) {

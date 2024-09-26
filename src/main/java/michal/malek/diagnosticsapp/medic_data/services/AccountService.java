@@ -23,9 +23,7 @@ public class AccountService {
     private final DrugService drugService;
     private final UserDataService userDataService;
     private final ChronicDiseaseService chronicDiseaseService;
-    private final DiagnosticTestService diagnosticTestService;
     private final JWTService jwtService;
-    private final GoogleDriveService googleDriveService;
 
     public String updateChronicDiseases(RedirectAttributes redirectAttributes){
         try{
@@ -47,11 +45,6 @@ public class AccountService {
         }
         redirectAttributes.addFlashAttribute("message", new AppResponse("Drugs updated successfully", ResponseType.SUCCESS));
         return "redirect:/account/admin/dashboard";
-    }
-
-    public void listFilesOnGoogleDrive() throws IOException {
-        List<File> files = googleDriveService.listFiles();
-        files.forEach(elem -> System.out.println(elem.getName() + "  id:  " + elem.getId()));
     }
 
     public Stream<Drug> findDrugs(String str) {
@@ -113,58 +106,12 @@ public class AccountService {
         return ResponseEntity.ok().build();
     }
 
-
-    public String addDiagnosticTest(MultipartFile pdf, String type, RedirectAttributes redirectAttributes, String refreshToken) {
-        String userUid = jwtService.getClaimUserUid(refreshToken);
-
-        if(!"application/pdf".equals(pdf.getContentType()) && !" application/x-pdf".equals(pdf.getContentType())){
-            redirectAttributes.addFlashAttribute("message", new AppResponse("Wrong file format", ResponseType.FAILURE));
-            return "redirect:/add-diagnostic-tests";
-        }
-
-        long maxSize = 200 * 1024;
-        if (pdf.getSize() > maxSize) {
-            redirectAttributes.addFlashAttribute("message", new AppResponse("Too big file", ResponseType.FAILURE));
-            return "redirect:/add-diagnostic-tests";
-        }
-
-        if(userDataService.addDiagnosticTest(userUid ,pdf, DiagnosticsTestsType.valueOf(type))){
-            redirectAttributes.addFlashAttribute("message", new AppResponse("Added diagnostic test", ResponseType.SUCCESS));
-            return "redirect:/add-diagnostic-tests";
-        }
-        redirectAttributes.addFlashAttribute("message", new AppResponse("Adding file failed", ResponseType.ERROR));
-        return "redirect:/add-diagnostic-tests";
-    }
-
-
-    public ResponseEntity<?> removeDiagnosticTest(String driveId, String refreshToken){
-        String userUid = jwtService.getClaimUserUid(refreshToken);
-        try {
-            googleDriveService.deleteFile(driveId);
-            userDataService.deleteFile(driveId,userUid);
-            return ResponseEntity.ok().build();
-        } catch (IOException e) {
-           throw new RuntimeException("remove diagnostic test error");
-        }
-    }
-
     public ResponseEntity<?> findOwnedDiagnosticTests(String refreshToken) {
         String userUid = jwtService.getClaimUserUid(refreshToken);
         List<DiagnosticTest> diagnosticTests = userDataService.getOwnedDiagnosticTests(userUid);
         return ResponseEntity.ok().body(diagnosticTests);
     }
 
-
-    public String deleteDriveFile(String driveId, RedirectAttributes redirectAttributes) {
-        try {
-            googleDriveService.deleteFile(driveId);
-        } catch (IOException e) {
-            redirectAttributes.addFlashAttribute("message", new AppResponse("Deleting file failed", ResponseType.FAILURE));
-            return "redirect:/account/admin/dashboard";
-        }
-        redirectAttributes.addFlashAttribute("message", new AppResponse("Deleting file succeed", ResponseType.SUCCESS));
-        return "redirect:/account/admin/dashboard";
-    }
 
     public String addPersonalData(PersonalDataDTO personalDataDTO, String refreshToken, RedirectAttributes redirectAttributes) {
         String userUid = jwtService.getClaimUserUid(refreshToken);
