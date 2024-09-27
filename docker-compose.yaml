@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  mysql:
+    image: 'mysql:8.0'
+    environment:
+      - 'MYSQL_DATABASE=diagnostics_db'
+      - 'MYSQL_USER=user1'
+      - 'MYSQL_PASSWORD=${DB_PASSWORD}'
+      - 'MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}'
+    ports:
+      - '3306:3306'
+    volumes:
+      - db_data:/var/lib/mysql
+
+  app:
+    build: .
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/diagnostics_db
+      - SPRING_DATASOURCE_USERNAME=user1
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DB_PASSWORD}
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update  # Opcja Hibernate do aktualizacji schematu
+    ports:
+      - '8080:8080'
+    depends_on:
+      - mysql
+
+volumes:
+  db_data:
