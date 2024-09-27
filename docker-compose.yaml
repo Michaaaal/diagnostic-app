@@ -20,6 +20,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${SPRING_DB_PASSWORD}
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update  # Opcja Hibernate do aktualizacji schematu
+      - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.MySQLDialect
     ports:
       - '8080:8080'
     depends_on:
