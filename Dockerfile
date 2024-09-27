@@ -1,5 +1,5 @@
 # Etap budowania aplikacji
-FROM maven:3.8.4-openjdk-18 AS build
+FROM maven:3.8.6-eclipse-temurin-18 AS build
 
 # Ustaw katalog roboczy dla Maven
 WORKDIR /app
@@ -17,7 +17,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Etap uruchamiania aplikacji
-FROM openjdk:18-jdk-alpine
+FROM eclipse-temurin:18-jdk-alpine
 
 # Ustaw katalog roboczy w kontenerze
 WORKDIR /app
